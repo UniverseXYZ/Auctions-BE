@@ -36,5 +36,3 @@ export class Auctions {
 export type AuctionsDocument = Auctions & Document;
 
 export const AuctionsSchema = SchemaFactory.createForClass(Auctions);
-
-AuctionsSchema.index({ owner: 1 }, { unique: true });
