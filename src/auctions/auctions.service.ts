@@ -1,17 +1,15 @@
-import { Body, Injectable, Req } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-
-import { Auctions, AuctionsDocument } from "./schemas/auction.schema";
+import { Inject, Injectable } from "@nestjs/common";
+import { IDataLayer } from "src/data-layer/IDataLayer";
+import { DATA_LAYER_SERVICE } from "src/utils";
 
 @Injectable()
 export class AuctionsService {
   constructor(
-    @InjectModel(Auctions.name)
-    readonly auctionsModel: Model<AuctionsDocument>
+    @Inject(DATA_LAYER_SERVICE)
+    private readonly dataLayerService: IDataLayer
   ) {}
 
   async createAuction(auction) {
-    return await this.auctionsModel.create(auction);
+    return await this.dataLayerService.createAuction(auction);
   }
 }

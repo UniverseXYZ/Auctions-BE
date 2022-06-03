@@ -1,0 +1,1 @@
+export const DATA_LAYER_SERVICE = "DATA LAYER SERVICE";

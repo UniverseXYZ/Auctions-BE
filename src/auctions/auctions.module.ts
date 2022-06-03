@@ -9,6 +9,8 @@ import { DatabaseModule } from "../database/database.module";
 import { DatabaseService } from "../database/database.service";
 import { HealthModule } from "src/health/health.module";
 import { Auctions, AuctionsSchema } from "./schemas/auction.schema";
+import { DataLayerService } from "src/data-layer/data-layer.service";
+import { DATA_LAYER_SERVICE } from "src/utils";
 
 @Module({
   imports: [
@@ -31,7 +33,13 @@ import { Auctions, AuctionsSchema } from "./schemas/auction.schema";
       },
     ]),
   ],
-  providers: [AuctionsService],
+  providers: [
+    AuctionsService,
+    {
+      useClass: DataLayerService,
+      provide: DATA_LAYER_SERVICE,
+    },
+  ],
   controllers: [AuctionsController],
 })
 export class AuctionsModule {}
