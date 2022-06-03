@@ -10,6 +10,9 @@ export class AuctionsService {
   ) {}
 
   async createAuction(auction) {
-    return await this.dataLayerService.createAuction(auction);
+    const createdAuction = await this.dataLayerService.createAuction(auction);
+    return {
+      id: createdAuction._id,
+    };
   }
 }
