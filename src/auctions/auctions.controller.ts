@@ -1,7 +1,4 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { Model } from "mongoose";
-import { InjectModel } from "@nestjs/mongoose";
-import { Auctions, AuctionsDocument } from "./schemas/auction.schema";
 import { ApiOperation } from "@nestjs/swagger";
 import { AuctionDto } from "./dtos/auction.dto";
 import { AuctionsService } from "./auctions.service";
