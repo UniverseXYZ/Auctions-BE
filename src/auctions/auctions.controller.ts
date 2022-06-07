@@ -8,11 +8,7 @@ import { AuctionsService } from "./auctions.service";
 
 @Controller("auctions")
 export class AuctionsController {
-  constructor(
-    private auctionService: AuctionsService,
-    @InjectModel(Auctions.name)
-    readonly nftCollectionAttributesModel: Model<AuctionsDocument>
-  ) {}
+  constructor(private auctionService: AuctionsService) {}
 
   @Post()
   @ApiOperation({ summary: "Create new auction" })
