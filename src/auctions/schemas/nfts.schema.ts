@@ -7,9 +7,6 @@ export class Nfts {
   public nftId: number;
 
   @Prop({ required: true })
-  public deposited: boolean;
-
-  @Prop({ required: true })
   public claimed: boolean;
 }
 

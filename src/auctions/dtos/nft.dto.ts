@@ -5,8 +5,5 @@ export class Nft {
   nftId: number;
 
   @IsBoolean()
-  deposited: boolean;
-
-  @IsBoolean()
   claimed: boolean;
 }
