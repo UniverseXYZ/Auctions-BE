@@ -37,17 +37,17 @@ export class TierDto {
     description: "The nft slot configuration",
     example: [
       {
-        nfts: [{ nftId: 1, deposited: true, claimed: false }],
+        nfts: [{ nftId: 1, claimed: false }],
         minimumBid: 0.1,
         capturedRevenue: false,
       },
       {
-        nfts: [{ nftId: 1, deposited: true, claimed: false }],
+        nfts: [{ nftId: 1, claimed: false }],
         minimumBid: 0.1,
         capturedRevenue: false,
       },
       {
-        nfts: [{ nftId: 1, deposited: true, claimed: false }],
+        nfts: [{ nftId: 1, claimed: false }],
         minimumBid: 0.1,
         capturedRevenue: false,
       },
