@@ -21,6 +21,7 @@ export const mockAuction = {
         {
           nfts: [
             {
+              contractAddress: "0xb67E6711C3bB2AA968bE26703dE20152d4948b38",
               nftId: 1,
               claimed: false,
             },
@@ -31,6 +32,7 @@ export const mockAuction = {
         {
           nfts: [
             {
+              contractAddress: "0xb67E6711C3bB2AA968bE26703dE20152d4948b38",
               nftId: 1,
               claimed: false,
             },
@@ -41,6 +43,7 @@ export const mockAuction = {
         {
           nfts: [
             {
+              contractAddress: "0xb67E6711C3bB2AA968bE26703dE20152d4948b38",
               nftId: 1,
               claimed: false,
             },

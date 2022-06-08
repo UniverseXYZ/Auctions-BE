@@ -4,15 +4,18 @@ import { IDataLayerMock } from "../../test/mocks/IDataLayer";
 import { IDataLayer } from "../data-layer/IDataLayer";
 import { DATA_LAYER_SERVICE } from "../utils";
 import { AuctionsService } from "./auctions.service";
+import { AvailabilityService } from "../availability/nft-availability.service";
 
 describe("Auctions Service", () => {
-  let service: AuctionsService;
+  let auctionsService: AuctionsService;
+  let availabilityService: AvailabilityService;
   let dataLayerService: IDataLayer;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuctionsService,
+        AvailabilityService,
         {
           provide: DATA_LAYER_SERVICE,
           useValue: new IDataLayerMock(),
@@ -20,19 +23,20 @@ describe("Auctions Service", () => {
       ],
     }).compile();
 
-    service = module.get<AuctionsService>(AuctionsService);
+    auctionsService = module.get<AuctionsService>(AuctionsService);
+    availabilityService = module.get<AvailabilityService>(AvailabilityService);
     dataLayerService = module.get<IDataLayer>(DATA_LAYER_SERVICE);
   });
 
   it("AuctionsService should be defined", () => {
-    expect(service).toBeDefined();
+    expect(auctionsService).toBeDefined();
   });
 
   it("should return the id of the created auction", async () => {
     jest
       .spyOn(dataLayerService, "createAuction")
       .mockReturnValue({ _id: "323232" });
-    const result = await service.createAuction(mockAuction);
+    const result = await auctionsService.createAuction(mockAuction);
     expect(result).toEqual({ id: "323232" });
   });
 });

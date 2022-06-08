@@ -4,12 +4,15 @@ import {
   ArrayMinSize,
   IsArray,
   IsDateString,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   Length,
+  Matches,
   ValidateNested,
 } from "class-validator";
+import { ETHEREUM_ADDRESS } from "src/utils";
 import { TierDto } from "./rewartTier.dto";
 import { RoyaltySplitDto } from "./royaltySplits.dto";
 
@@ -19,6 +22,10 @@ export class AuctionDto {
     example: "0x13BBDC67f17A0C257eF67328C658950573A16aDe",
   })
   @IsString()
+  @IsNotEmpty()
+  @Matches(ETHEREUM_ADDRESS.VALID, {
+    message: ETHEREUM_ADDRESS.INVALID_MESSAGE,
+  })
   owner: string;
 
   @ApiProperty({
