@@ -6,7 +6,8 @@ import { DATA_LAYER_SERVICE } from "../utils";
 import { AuctionsService } from "./auctions.service";
 
 describe("Auctions Service", () => {
-  let service: AuctionsService;
+  let auctionsService: AuctionsService;
+
   let dataLayerService: IDataLayer;
 
   beforeEach(async () => {
@@ -20,19 +21,20 @@ describe("Auctions Service", () => {
       ],
     }).compile();
 
-    service = module.get<AuctionsService>(AuctionsService);
+    auctionsService = module.get<AuctionsService>(AuctionsService);
+
     dataLayerService = module.get<IDataLayer>(DATA_LAYER_SERVICE);
   });
 
   it("AuctionsService should be defined", () => {
-    expect(service).toBeDefined();
+    expect(auctionsService).toBeDefined();
   });
 
   it("should return the id of the created auction", async () => {
     jest
       .spyOn(dataLayerService, "createAuction")
       .mockReturnValue({ _id: "323232" });
-    const result = await service.createAuction(mockAuction);
+    const result = await auctionsService.createAuction(mockAuction);
     expect(result).toEqual({ id: "323232" });
   });
 });

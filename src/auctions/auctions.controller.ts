@@ -9,7 +9,7 @@ export class AuctionsController {
 
   @Post()
   @ApiOperation({ summary: "Create new auction" })
-  async getAuctions(@Body() auction: AuctionDto) {
+  async createAuction(@Body() auction: AuctionDto) {
     return await this.auctionService.createAuction(auction);
   }
 }

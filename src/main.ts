@@ -6,9 +6,10 @@ import helmet from "helmet";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe, VersioningType } from "@nestjs/common";
 import session from "express-session";
+import { AppModule } from "./app.module";
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AuctionsModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const config = app.get<ConfigService>(ConfigService);
   const port = config.get("port") || 8080;
   const sessionSecret = config.get("session_secret");
