@@ -38,7 +38,7 @@ export class AuctionDto {
 
   @ApiProperty({
     description: "Address of the bidding token",
-    example: "0x0000000000000000000000000000000",
+    example: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
   })
   @IsString()
   @IsNotEmpty()
