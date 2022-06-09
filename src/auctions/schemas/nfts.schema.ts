@@ -5,6 +5,7 @@ import { ETHEREUM_ADDRESS } from "../../utils";
 
 @Schema()
 export class Nfts {
+  @Prop({ required: true })
   @IsNotEmpty()
   @Matches(ETHEREUM_ADDRESS.VALID, {
     message: ETHEREUM_ADDRESS.INVALID_MESSAGE,
