@@ -7,10 +7,6 @@ import {
 import { getModelToken, MongooseModule } from "@nestjs/mongoose";
 import { Auctions, AuctionsSchema } from "../auctions/schemas/auction.schema";
 import { mockAuction } from "../../test/mocks/auction";
-import {
-  NftUnavailable,
-  NftUnavailableSchema,
-} from "../availability/schemas/nft-availability.schema";
 
 describe("Data Layer Service", () => {
   let service: DataLayerService;
@@ -24,12 +20,6 @@ describe("Data Layer Service", () => {
           {
             name: Auctions.name,
             schema: AuctionsSchema,
-          },
-        ]),
-        MongooseModule.forFeature([
-          {
-            name: NftUnavailable.name,
-            schema: NftUnavailableSchema,
           },
         ]),
       ],

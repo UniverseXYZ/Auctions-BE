@@ -4,18 +4,16 @@ import { IDataLayerMock } from "../../test/mocks/IDataLayer";
 import { IDataLayer } from "../data-layer/IDataLayer";
 import { DATA_LAYER_SERVICE } from "../utils";
 import { AuctionsService } from "./auctions.service";
-import { AvailabilityService } from "../availability/nft-availability.service";
 
 describe("Auctions Service", () => {
   let auctionsService: AuctionsService;
-  let availabilityService: AvailabilityService;
+
   let dataLayerService: IDataLayer;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuctionsService,
-        AvailabilityService,
         {
           provide: DATA_LAYER_SERVICE,
           useValue: new IDataLayerMock(),
@@ -24,7 +22,7 @@ describe("Auctions Service", () => {
     }).compile();
 
     auctionsService = module.get<AuctionsService>(AuctionsService);
-    availabilityService = module.get<AvailabilityService>(AvailabilityService);
+
     dataLayerService = module.get<IDataLayer>(DATA_LAYER_SERVICE);
   });
 

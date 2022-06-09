@@ -39,12 +39,10 @@ export class TierDto {
       {
         nfts: [
           {
-            contractAddress: "0xb67E6711C3bB2AA968bE26703dE20152d4948b38",
             nftId: 1,
             claimed: false,
           },
           {
-            contractAddress: "0xb67E6711C3bB2AA968bE26703dE20152d4948b38",
             nftId: 4,
             claimed: false,
           },
@@ -55,7 +53,6 @@ export class TierDto {
       {
         nfts: [
           {
-            contractAddress: "0xb67E6711C3bB2AA968bE26703dE20152d4948b38",
             nftId: 2,
             claimed: false,
           },
@@ -66,7 +63,6 @@ export class TierDto {
       {
         nfts: [
           {
-            contractAddress: "0xb67E6711C3bB2AA968bE26703dE20152d4948b38",
             nftId: 3,
             claimed: false,
           },
