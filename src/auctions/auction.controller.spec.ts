@@ -1,12 +1,12 @@
-import { HttpException, HttpStatus } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { IDataLayerMock } from "../../test/mocks/IDataLayer";
-import { DATA_LAYER_SERVICE, notExistingAuction } from "../utils";
+import { DATA_LAYER_SERVICE } from "../utils";
 import { AuctionsController } from "./auctions.controller";
 import { AuctionsService } from "./auctions.service";
 
 describe("Auctions Controller", () => {
   let auctionsController: AuctionsController;
+  let auctionsService: AuctionsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,23 +21,16 @@ describe("Auctions Controller", () => {
     }).compile();
 
     auctionsController = module.get<AuctionsController>(AuctionsController);
+    auctionsService = module.get<AuctionsService>(AuctionsService);
   });
 
   it("AuctionsController should be defined", () => {
     expect(auctionsController).toBeDefined();
   });
 
-  it("should throw an exception", async () => {
+  it("should throw an exception if the id is not of type ObjectId", async () => {
     await expect(
       auctionsController.removeAuction("notValidId")
-    ).rejects.toEqual(
-      new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: notExistingAuction("notValidId"),
-        },
-        HttpStatus.BAD_REQUEST
-      )
-    );
+    ).rejects.toThrowError("Http Exception");
   });
 });
