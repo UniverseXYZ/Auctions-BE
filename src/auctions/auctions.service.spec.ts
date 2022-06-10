@@ -33,8 +33,8 @@ describe("Auctions Service", () => {
   it("should return the id of the created auction", async () => {
     jest
       .spyOn(dataLayerService, "createAuction")
-      .mockReturnValue({ _id: "323232" });
-    const result = await auctionsService.createAuction(mockAuction);
-    expect(result).toEqual({ id: "323232" });
+      .mockReturnValue({ _id: "62a1a8cccac2e4fb2054db88" });
+    const response = await auctionsService.createAuction(mockAuction);
+    expect(response).toEqual({ id: "62a1a8cccac2e4fb2054db88" });
   });
 });

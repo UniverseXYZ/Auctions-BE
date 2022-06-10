@@ -10,7 +10,7 @@ import {
 import { ApiOperation, ApiParam, ApiProperty } from "@nestjs/swagger";
 import { AuctionDto } from "./dtos/auction.dto";
 import { AuctionsService } from "./auctions.service";
-import { isValidId, notExistingAuction } from "src/utils";
+import { isValidId, notExistingAuction } from "../utils";
 
 @Controller("auctions")
 export class AuctionsController {
@@ -26,7 +26,7 @@ export class AuctionsController {
   @ApiOperation({ summary: "Remove draft auction" })
   @ApiParam({
     name: "Auction id",
-    type: Number,
+    type: String,
     required: true,
   })
   async removeAuction(@Param("id") id) {

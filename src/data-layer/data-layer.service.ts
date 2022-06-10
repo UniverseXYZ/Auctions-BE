@@ -15,7 +15,7 @@ export class DataLayerService implements IDataLayer {
     return await this.auctionsModel.create(auction);
   }
 
-  async removeAuction(id: number): Promise<any> {
+  async removeAuction(id: string): Promise<any> {
     return await this.auctionsModel.deleteOne({ _id: id });
   }
 }
