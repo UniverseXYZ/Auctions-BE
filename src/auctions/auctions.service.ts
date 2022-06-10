@@ -16,4 +16,8 @@ export class AuctionsService {
       id: createdAuction._id,
     };
   }
+
+  async removeAuction(id: number) {
+    return await this.dataLayerService.removeAuction(id);
+  }
 }
