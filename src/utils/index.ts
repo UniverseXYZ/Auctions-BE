@@ -9,6 +9,4 @@ export const ETHEREUM_ADDRESS = {
   INVALID_MESSAGE: "Invalid Ethereum address",
 };
 
-export const notExistingAuction = (id: string) =>
-  `Auction id '${id}' does not exist`;
 export const isValidId = (id: string) => mongoose.Types.ObjectId.isValid(id);

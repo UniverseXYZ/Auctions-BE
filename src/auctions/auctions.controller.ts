@@ -1,16 +1,9 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  HttpException,
-  HttpStatus,
-  Param,
-  Post,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Param, Post } from "@nestjs/common";
 import { ApiOperation, ApiParam, ApiProperty } from "@nestjs/swagger";
 import { AuctionDto } from "./dtos/auction.dto";
 import { AuctionsService } from "./auctions.service";
-import { isValidId, notExistingAuction } from "../utils";
+import { isValidId } from "../utils";
+import { Exceptions } from "./exceptions";
 
 @Controller("auctions")
 export class AuctionsController {
@@ -30,15 +23,18 @@ export class AuctionsController {
     required: true,
   })
   async removeAuction(@Param("id") id) {
+    //TODO: add auth and checks if there are deposited NFTs etc
+    // * Check if id is a valid ObjectId
     if (!isValidId(id)) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: notExistingAuction(id),
-        },
-        HttpStatus.BAD_REQUEST
-      );
+      Exceptions.auctionNotFound(id);
     }
+
+    const auction = await this.auctionService.getAuctionById(id);
+
+    if (!auction) {
+      Exceptions.auctionNotFound(id);
+    }
+
     return await this.auctionService.removeAuction(id);
   }
 }
