@@ -5,13 +5,12 @@ import {
   IsDateString,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsString,
   Length,
   Matches,
   ValidateNested,
 } from "class-validator";
-import { ETHEREUM_ADDRESS } from "src/utils";
+import { ETHEREUM_ADDRESS } from "../../utils";
 import { RoyaltySplitDto } from "./royaltySplits.dto";
 
 export class AuctionDto {

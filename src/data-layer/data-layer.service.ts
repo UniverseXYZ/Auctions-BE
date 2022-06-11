@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import { AuctionDto } from "../auctions/dtos/auction.dto";
 import { Auctions, AuctionsDocument } from "../auctions/schemas/auction.schema";
 import { IDataLayer } from "./IDataLayer";
@@ -13,5 +13,12 @@ export class DataLayerService implements IDataLayer {
   ) {}
   async createAuction(auction: AuctionDto) {
     return await this.auctionsModel.create(auction);
+  }
+
+  async removeAuction(id: string): Promise<any> {
+    return await this.auctionsModel.deleteOne({ _id: id });
+  }
+  async getAuctionById(id: string): Promise<AuctionDto> {
+    return await this.auctionsModel.findOne({ _id: id });
   }
 }
