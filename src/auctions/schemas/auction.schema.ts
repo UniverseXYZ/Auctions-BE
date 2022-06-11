@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
-import { RewardTiers, RewardTiersSchema } from "./rewardTiers.schema";
 import { RoyaltySplits, RoyaltySplitsSchema } from "./royaltySplits.schema";
 
 @Schema({ timestamps: true, collection: "auctions" })
@@ -26,11 +25,8 @@ export class Auctions {
   @Prop({ required: true })
   public endDate: Date;
 
-  @Prop({ type: [RoyaltySplitsSchema] })
+  @Prop({ type: [RoyaltySplitsSchema], required: true })
   public royaltySplits: [RoyaltySplits];
-
-  @Prop({ type: [RewardTiersSchema], required: true })
-  public rewardTiers: [RewardTiers];
 }
 
 export type AuctionsDocument = Auctions & Document;

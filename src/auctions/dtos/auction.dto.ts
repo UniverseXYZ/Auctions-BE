@@ -1,7 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
-  ArrayMinSize,
   IsArray,
   IsDateString,
   IsNotEmpty,
@@ -13,7 +12,6 @@ import {
   ValidateNested,
 } from "class-validator";
 import { ETHEREUM_ADDRESS } from "src/utils";
-import { TierDto } from "./rewartTier.dto";
 import { RoyaltySplitDto } from "./royaltySplits.dto";
 
 export class AuctionDto {
@@ -76,16 +74,8 @@ export class AuctionDto {
   endDate: Date;
 
   @IsArray()
-  @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => RoyaltySplitDto)
   @ApiProperty({ type: () => RoyaltySplitDto, isArray: true })
   royaltySplits: RoyaltySplitDto[];
-
-  @IsArray()
-  @ArrayMinSize(1)
-  @ValidateNested({ each: true })
-  @Type(() => TierDto)
-  @ApiProperty({ type: () => TierDto, isArray: true })
-  rewardTiers: TierDto[];
 }

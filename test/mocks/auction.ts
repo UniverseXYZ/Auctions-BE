@@ -12,43 +12,4 @@ export const mockAuction = {
       percentAmount: 10,
     },
   ],
-  rewardTiers: [
-    {
-      name: "Reward tier 1",
-      numberOfWinners: 3,
-      nftsPerWinner: "1-3",
-      nftSlots: [
-        {
-          nfts: [
-            {
-              nftId: 1,
-              claimed: false,
-            },
-          ],
-          minimumBid: 0.1,
-          capturedRevenue: false,
-        },
-        {
-          nfts: [
-            {
-              nftId: 1,
-              claimed: false,
-            },
-          ],
-          minimumBid: 0.1,
-          capturedRevenue: false,
-        },
-        {
-          nfts: [
-            {
-              nftId: 1,
-              claimed: false,
-            },
-          ],
-          minimumBid: 0.1,
-          capturedRevenue: false,
-        },
-      ],
-    },
-  ],
 };
