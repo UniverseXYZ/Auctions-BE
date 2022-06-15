@@ -4,14 +4,8 @@ import { Nfts, NftsSchema } from "./nfts.schema";
 
 @Schema()
 export class NftSlots {
-  @Prop({ required: true })
-  public capturedRevenue: boolean;
-
   @Prop({ type: [NftsSchema], required: true })
   public nfts: Nfts[];
-
-  @Prop({ required: true })
-  public minimumBid: number;
 }
 
 export type NftSlotsDocument = NftSlots & Document;

@@ -4,10 +4,10 @@ import { Document } from "mongoose";
 @Schema()
 export class Nfts {
   @Prop({ required: true })
-  public nftId: number;
+  public contractAddress: string;
 
   @Prop({ required: true })
-  public claimed: boolean;
+  public tokenId: number;
 }
 
 export type NftsDocument = Nfts & Document;

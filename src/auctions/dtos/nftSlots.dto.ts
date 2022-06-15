@@ -3,8 +3,8 @@ import { Type } from "class-transformer";
 import {
   ArrayMinSize,
   IsArray,
-  IsBoolean,
   IsNumber,
+  IsOptional,
   ValidateNested,
 } from "class-validator";
 import { Nft } from "./nft.dto";
@@ -18,8 +18,6 @@ export class NftSlots {
   nfts: Nft[];
 
   @IsNumber()
+  @IsOptional()
   minimumBid: number;
-
-  @IsBoolean()
-  capturedRevenue: boolean;
 }

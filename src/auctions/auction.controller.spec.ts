@@ -27,10 +27,4 @@ describe("Auctions Controller", () => {
   it("AuctionsController should be defined", () => {
     expect(auctionsController).toBeDefined();
   });
-
-  it("should throw an exception if the id is not of type ObjectId", async () => {
-    await expect(
-      auctionsController.removeAuction("notValidId")
-    ).rejects.toThrowError("Http Exception");
-  });
 });
