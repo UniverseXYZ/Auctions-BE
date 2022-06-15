@@ -4,7 +4,7 @@ import { AuctionsController } from "./auctions.controller";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Auctions, AuctionsSchema } from "./schemas/auction.schema";
 import { DataLayerService } from "src/data-layer/data-layer.service";
-import { DATA_LAYER_SERVICE } from "src/utils";
+import { DATA_LAYER_SERVICE } from "../utils/constants";
 
 @Module({
   imports: [

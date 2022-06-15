@@ -1,6 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
+import {
+  AUCTION_CANCELED_STATUS,
+  REWARD_TIER_CANCELED_STATUS,
+} from "src/utils/constants";
 import { IDataLayer } from "../data-layer/IDataLayer";
-import { DATA_LAYER_SERVICE } from "../utils";
+import { DATA_LAYER_SERVICE } from "../utils/constants";
 import { AuctionDto } from "./dtos/auction.dto";
 import { TierDto } from "./dtos/rewardTier.dto";
 
@@ -19,13 +23,6 @@ export class AuctionsService {
   }
 
   async createRewardTier(tier: TierDto, id: string) {
-    // const createdTier = await this.dataLayerService.createRewardTier(tier, id);
-    // const createdTerId =
-    //   createdTier?.rewardTiers[createdTier.rewardTiers.length - 1]._id || null;
-    // return {
-    //   id: createdTerId,
-    // };
-    //TODO: check if the above logic is needed or the auction can be returned
     return await this.dataLayerService.createRewardTier(tier, id);
   }
 
@@ -40,7 +37,20 @@ export class AuctionsService {
   }
 
   async removeAuction(id: string) {
-    return await this.dataLayerService.removeAuction(id);
+    const auction = await this.dataLayerService.getAuction(id);
+    let status = AUCTION_CANCELED_STATUS.notCanceled;
+
+    const { depositedNfts, canceled, onChain } = auction;
+
+    // * check if the auction is onChain, but not canceled and that there aren't any deposited NFTs
+    if (!(depositedNfts || (!canceled && onChain))) {
+      await this.dataLayerService.removeAuction(id);
+      status = AUCTION_CANCELED_STATUS.canceled;
+    }
+    return {
+      id: auction._id,
+      status,
+    };
   }
 
   async getAuction(id: string) {
@@ -48,7 +58,19 @@ export class AuctionsService {
   }
 
   async removeRewardTier(id: string, tierId: string) {
-    return await this.dataLayerService.removeRewardTier(id, tierId);
+    const auction = await this.dataLayerService.getAuction(id);
+    let status = REWARD_TIER_CANCELED_STATUS.notCanceled;
+
+    const { canceled, onChain, depositedNfts, finalised } = auction;
+
+    // * check if the reward tier is not finalised, doesn't have any deposited NFTs, is not onChain and is not canceled
+    if (!finalised || !depositedNfts || (!onChain && !canceled)) {
+      await this.dataLayerService.removeRewardTier(id, tierId);
+      status = REWARD_TIER_CANCELED_STATUS.canceled;
+    }
+    return {
+      canceled,
+    };
   }
 
   // async getRewardTiers(id: string) {

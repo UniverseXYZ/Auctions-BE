@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString, Matches } from "class-validator";
-import { ETHEREUM_ADDRESS } from "../../utils";
+import { ETHEREUM_ADDRESS } from "../../utils/constants";
 
 export class Nft {
   @IsString()
@@ -9,5 +9,5 @@ export class Nft {
   })
   contractAddress: string;
   @IsNumber()
-  tokenId: number;
+  tokenId: string;
 }

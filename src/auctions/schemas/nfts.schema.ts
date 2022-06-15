@@ -7,7 +7,7 @@ export class Nfts {
   public contractAddress: string;
 
   @Prop({ required: true })
-  public tokenId: number;
+  public tokenId: string;
 }
 
 export type NftsDocument = Nfts & Document;

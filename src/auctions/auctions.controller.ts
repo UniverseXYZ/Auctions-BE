@@ -13,7 +13,8 @@ import { ApiOperation, ApiParam } from "@nestjs/swagger";
 import { AuctionDto } from "./dtos/auction.dto";
 import { AuctionsService } from "./auctions.service";
 import { TierDto } from "./dtos/rewardTier.dto";
-import { ExceptionInterceptor } from "./interceptors/auctions.interceptor";
+import { AuctionsExceptionInterceptor } from "./interceptors/auctions.interceptor";
+import { RewardTiersExceptionInterceptor } from "./interceptors/rewardTiers.interceptor";
 
 //! TODO: add auth
 @Controller("auctions")
@@ -26,7 +27,8 @@ export class AuctionsController {
     return await this.auctionService.createAuction(auction);
   }
 
-  @UseInterceptors(ExceptionInterceptor)
+  @UseInterceptors(AuctionsExceptionInterceptor)
+  @UseInterceptors(RewardTiersExceptionInterceptor)
   @Patch("/:id/tier/")
   @ApiOperation({ summary: "Create or edit reward tier" })
   async createRewardTier(
@@ -41,7 +43,7 @@ export class AuctionsController {
     }
   }
 
-  @UseInterceptors(ExceptionInterceptor)
+  @UseInterceptors(AuctionsExceptionInterceptor)
   @Delete("/:id")
   @ApiOperation({ summary: "Remove draft auction" })
   @ApiParam({
@@ -53,7 +55,7 @@ export class AuctionsController {
     return await this.auctionService.removeAuction(id);
   }
 
-  @UseInterceptors(ExceptionInterceptor)
+  @UseInterceptors(AuctionsExceptionInterceptor)
   @Get("/:id")
   @ApiOperation({ summary: "Get auction" })
   async getAuction(@Param("id") id) {
@@ -61,7 +63,8 @@ export class AuctionsController {
     return await this.auctionService.getAuction(id);
   }
 
-  @UseInterceptors(ExceptionInterceptor)
+  @UseInterceptors(AuctionsExceptionInterceptor)
+  @UseInterceptors(RewardTiersExceptionInterceptor)
   @Delete("/:id/tier/:rewardTierId")
   @ApiOperation({ summary: "Remove reward tier" })
   async removeRewardTier(@Param("id") id, @Param("rewardTierId") rewardTierId) {

@@ -1,5 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { IDataLayerMock } from "../../test/mocks/IDataLayer";
+import { NftsService } from "../nfts/nfts.service";
 import { DATA_LAYER_SERVICE } from "../utils";
 import { AuctionsController } from "./auctions.controller";
 import { AuctionsService } from "./auctions.service";
@@ -12,6 +13,7 @@ describe("Auctions Controller", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuctionsService,
+        NftsService,
         {
           provide: DATA_LAYER_SERVICE,
           useValue: new IDataLayerMock(),

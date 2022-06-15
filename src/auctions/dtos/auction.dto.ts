@@ -10,7 +10,7 @@ import {
   Matches,
   ValidateNested,
 } from "class-validator";
-import { ETHEREUM_ADDRESS } from "../../utils";
+import { ETHEREUM_ADDRESS } from "../../utils/constants";
 import { RoyaltySplitDto } from "./royaltySplits.dto";
 
 export class AuctionDto {

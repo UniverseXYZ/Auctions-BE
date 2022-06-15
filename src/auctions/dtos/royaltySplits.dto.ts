@@ -7,7 +7,7 @@ import {
   Max,
   Min,
 } from "class-validator";
-import { ETHEREUM_ADDRESS } from "../../utils";
+import { ETHEREUM_ADDRESS } from "../../utils/constants";
 
 export class RoyaltySplitDto {
   @ApiProperty({
