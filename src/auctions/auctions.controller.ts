@@ -28,7 +28,7 @@ export class AuctionsController {
 
   @UseInterceptors(ExceptionInterceptor)
   @Patch("/:id/tier/")
-  @ApiOperation({ summary: "Create reward tier" })
+  @ApiOperation({ summary: "Create or edit reward tier" })
   async createRewardTier(
     @Body() tier: TierDto,
     @Param("id") id,
