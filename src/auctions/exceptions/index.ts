@@ -30,4 +30,14 @@ export class Exceptions {
       HttpStatus.BAD_REQUEST
     );
   }
+
+  static tokenNotAllowed(token: string) {
+    throw new HttpException(
+      {
+        status: HttpStatus.BAD_REQUEST,
+        error: `Token '${token}' is not allowed`,
+      },
+      HttpStatus.BAD_REQUEST
+    );
+  }
 }

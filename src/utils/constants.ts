@@ -10,7 +10,8 @@ export const AUCTION_CANCELED_STATUS = {
   notCanceled: "The auction cannot be canceled",
 };
 
-export const REWARD_TIER_CANCELED_STATUS = {
+export const REWARD_TIER_MODIFIED_STATUS = {
   canceled: "Reward tier canceled successfully",
   notCanceled: "The reward tier cannot be canceled",
+  notEdited: "The requirments for editing a reward tier were not met",
 };

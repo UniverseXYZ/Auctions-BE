@@ -5,6 +5,7 @@ import {
   IsDateString,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Length,
   Matches,
@@ -51,11 +52,8 @@ export class AuctionDto {
   @IsString()
   tokenSymbol: string;
 
-  @ApiProperty({
-    description: "Number of decimals of the bidding token",
-    example: 18,
-  })
   @IsNumber()
+  @IsOptional()
   tokenDecimals: number;
 
   @ApiProperty({
