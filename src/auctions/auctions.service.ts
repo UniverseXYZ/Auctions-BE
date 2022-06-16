@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
   AUCTION_CANCELED_STATUS,
-  REWARD_TIER_CANCELED_STATUS,
+  REWARD_TIER_MODIFIED_STATUS,
 } from "src/utils/constants";
 import { IDataLayer } from "../data-layer/IDataLayer";
 import { DATA_LAYER_SERVICE } from "../utils/constants";
@@ -16,6 +16,7 @@ export class AuctionsService {
   ) {}
 
   async createAuction(auction: AuctionDto) {
+    // ! TODO: We need to validate that this owner address matches the one sent using the JWT auth token
     const createdAuction = await this.dataLayerService.createAuction(auction);
     return {
       id: createdAuction._id,
@@ -27,13 +28,21 @@ export class AuctionsService {
   }
 
   async editRewardTier(tier: TierDto, id: string, tierId: string) {
-    const editedTier = await this.dataLayerService.editRewardTier(
-      tier,
-      id,
-      tierId
-    );
+    const auction = await this.dataLayerService.getAuction(id);
 
-    return editedTier;
+    const { canceled, onChain, depositedNfts, finalised } = auction;
+
+    // * check if the reward tier is not finalised, doesn't have any deposited NFTs, is not onChain and is not canceled
+    if (!finalised || !depositedNfts || (!onChain && !canceled)) {
+      const editedTier = await this.dataLayerService.editRewardTier(
+        tier,
+        id,
+        tierId
+      );
+      return editedTier;
+    }
+
+    return { status: REWARD_TIER_MODIFIED_STATUS.notEdited };
   }
 
   async removeAuction(id: string) {
@@ -59,17 +68,17 @@ export class AuctionsService {
 
   async removeRewardTier(id: string, tierId: string) {
     const auction = await this.dataLayerService.getAuction(id);
-    let status = REWARD_TIER_CANCELED_STATUS.notCanceled;
+    let status = REWARD_TIER_MODIFIED_STATUS.notCanceled;
 
     const { canceled, onChain, depositedNfts, finalised } = auction;
 
     // * check if the reward tier is not finalised, doesn't have any deposited NFTs, is not onChain and is not canceled
     if (!finalised || !depositedNfts || (!onChain && !canceled)) {
       await this.dataLayerService.removeRewardTier(id, tierId);
-      status = REWARD_TIER_CANCELED_STATUS.canceled;
+      status = REWARD_TIER_MODIFIED_STATUS.canceled;
     }
     return {
-      canceled,
+      status,
     };
   }
 
