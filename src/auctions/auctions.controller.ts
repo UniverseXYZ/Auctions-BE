@@ -17,7 +17,6 @@ import { TierDto } from "./dtos/rewardTier.dto";
 import { AuctionsExceptionInterceptor } from "./interceptors/auctions.interceptor";
 import { RewardTiersExceptionInterceptor } from "./interceptors/rewardTiers.interceptor";
 import { NftsService } from "../nfts/nfts.service";
-import { getNftsEndpoint, getNftsAvailability } from "../utils";
 import { Tokens } from "../utils/tokens";
 import { Exceptions } from "./exceptions";
 
@@ -46,18 +45,22 @@ export class AuctionsController {
 
   @UseInterceptors(AuctionsExceptionInterceptor)
   @UseInterceptors(RewardTiersExceptionInterceptor)
-  @Patch("/:id/tier/")
+  @Patch("/:auctionId/tier/")
   @ApiOperation({ summary: "Create or edit reward tier" })
   async createRewardTier(
     @Body() tier: TierDto,
-    @Param("id") id,
+    @Param("auctionId") auctionId,
     @Query("tierId") tierId
   ) {
     try {
       if (!tierId) {
-        return await this.auctionService.createRewardTier(tier, id);
+        return await this.auctionService.createRewardTier(tier, auctionId);
       } else if ("") {
-        return await this.auctionService.editRewardTier(tier, id, tierId);
+        return await this.auctionService.editRewardTier(
+          tier,
+          auctionId,
+          tierId
+        );
       }
     } catch (error) {
       // console.log(error);
@@ -66,65 +69,65 @@ export class AuctionsController {
   }
 
   @UseInterceptors(AuctionsExceptionInterceptor)
-  @Delete("/:id")
+  @Delete("/:auctionId")
   @ApiOperation({ summary: "Remove draft auction" })
   @ApiParam({
     name: "Auction id",
     type: String,
     required: true,
   })
-  async removeAuction(@Param("id") id) {
-    return await this.auctionService.removeAuction(id);
+  async removeAuction(@Param("auctionId") auctionId) {
+    return await this.auctionService.removeAuction(auctionId);
   }
 
   @UseInterceptors(AuctionsExceptionInterceptor)
-  @Get("/:id")
+  @Get("/:auctionId")
   @ApiOperation({ summary: "Get auction" })
-  async getAuction(@Param("id") id) {
+  async getAuction(@Param("auctionId") auctionId) {
     //TODO: get NFTs name etc
-    return await this.auctionService.getAuction(id);
+    return await this.auctionService.getAuction(auctionId);
   }
 
   @UseInterceptors(AuctionsExceptionInterceptor)
   @UseInterceptors(RewardTiersExceptionInterceptor)
-  @Delete("/:id/tier/:rewardTierId")
+  @Delete("/:auctionId/tier/:rewardTierId")
   @ApiOperation({ summary: "Remove reward tier" })
-  async removeRewardTier(@Param("id") id, @Param("rewardTierId") rewardTierId) {
-    return await this.auctionService.removeRewardTier(id, rewardTierId);
+  async removeRewardTier(
+    @Param("auctionId") auctionId,
+    @Param("rewardTierId") rewardTierId
+  ) {
+    return await this.auctionService.removeRewardTier(auctionId, rewardTierId);
   }
 
   @UseInterceptors(AuctionsExceptionInterceptor)
-  @Get("/:id/availability")
+  @Get("/:auctionId/availability")
   @ApiOperation({ summary: "Get available NFTs" })
   async getAvailableNfts(
     @Req() req,
-    @Param("id") id,
+    @Param("auctionId") auctionId,
     @Query("tierId") tierId,
     @Query("page") page
   ) {
-    const cloundFunctionUrl = getNftsEndpoint(
-      // ! TODO: remove at some point
-      "0x13BBDC67f17A0C257eF67328C658950573A16aDe",
-      page || "1"
-    );
-
     //get reward tiers count
     const rewardTiersLength = await this.auctionService.getRewardTiersLength(
-      id
+      auctionId
     );
 
     //get all user nfts
-    const userNfts = await this.nftsService.getNfts(cloundFunctionUrl);
+    const userNfts = await this.nftsService.getNfts(
+      "0x13BBDC67f17A0C257eF67328C658950573A16aDe",
+      page || "1"
+    ); // ! TODO: remove the hardcoded owner address at some point
 
     if (!tierId) {
       if (!rewardTiersLength) {
         return userNfts.data;
       } else {
         const rewardTiersResult = await this.auctionService.getAllRewardTiers(
-          id
+          auctionId
         );
 
-        const nftsWithFlag = getNftsAvailability(
+        const nftsWithFlag = this.nftsService.getNftsAvailability(
           rewardTiersResult.rewardTiers,
           userNfts.data
         );
@@ -134,11 +137,11 @@ export class AuctionsController {
     }
 
     const rewardTiersResult = await this.auctionService.getRewardTiers(
-      id,
+      auctionId,
       tierId
     );
 
-    const nftsWithFlag = getNftsAvailability(
+    const nftsWithFlag = this.nftsService.getNftsAvailability(
       rewardTiersResult.rewardTiers || [],
       userNfts.data
     );
