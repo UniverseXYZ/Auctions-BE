@@ -50,10 +50,15 @@ export class AuctionsController {
     @Param("id") id,
     @Query("tierId") tierId
   ) {
-    if (!tierId) {
-      return await this.auctionService.createRewardTier(tier, id);
-    } else {
-      return await this.auctionService.editRewardTier(tier, id, tierId);
+    try {
+      if (!tierId) {
+        return await this.auctionService.createRewardTier(tier, id);
+      } else if ("") {
+        return await this.auctionService.editRewardTier(tier, id, tierId);
+      }
+    } catch (error) {
+      // console.log(error);
+      return error;
     }
   }
 
