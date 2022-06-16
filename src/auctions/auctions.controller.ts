@@ -18,7 +18,7 @@ import { AuctionsExceptionInterceptor } from "./interceptors/auctions.intercepto
 import { RewardTiersExceptionInterceptor } from "./interceptors/rewardTiers.interceptor";
 import { NftsService } from "../nfts/nfts.service";
 import { getNftsEndpoint, getNftsAvailability } from "../utils";
-import { TOKENS } from "src/utils/tokens";
+import { Tokens } from "../utils/tokens";
 import { Exceptions } from "./exceptions";
 
 //! TODO: add auth
@@ -26,18 +26,21 @@ import { Exceptions } from "./exceptions";
 export class AuctionsController {
   constructor(
     private readonly auctionService: AuctionsService,
-    private readonly nftsService: NftsService
+    private readonly nftsService: NftsService,
+    private readonly tokens: Tokens
   ) {}
 
   @Post()
   @ApiOperation({ summary: "Create new auction" })
   async createAuction(@Body() auction: AuctionDto) {
     const { tokenSymbol } = auction;
-    if (!TOKENS[tokenSymbol]) {
+    const allowedTokens = this.tokens.getTokens();
+
+    if (!allowedTokens[tokenSymbol]) {
       Exceptions.tokenNotAllowed(tokenSymbol);
     }
 
-    auction.tokenDecimals = TOKENS[tokenSymbol].decimals;
+    auction.tokenDecimals = allowedTokens[tokenSymbol].decimals;
     return await this.auctionService.createAuction(auction);
   }
 
