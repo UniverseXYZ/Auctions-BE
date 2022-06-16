@@ -18,6 +18,8 @@ import { AuctionsExceptionInterceptor } from "./interceptors/auctions.intercepto
 import { RewardTiersExceptionInterceptor } from "./interceptors/rewardTiers.interceptor";
 import { NftsService } from "../nfts/nfts.service";
 import { getNftsEndpoint, getNftsAvailability } from "../utils";
+import { TOKENS } from "src/utils/tokens";
+import { Exceptions } from "./exceptions";
 
 //! TODO: add auth
 @Controller("auctions")
@@ -30,6 +32,12 @@ export class AuctionsController {
   @Post()
   @ApiOperation({ summary: "Create new auction" })
   async createAuction(@Body() auction: AuctionDto) {
+    const { tokenSymbol } = auction;
+    if (!TOKENS[tokenSymbol]) {
+      Exceptions.tokenNotAllowed(tokenSymbol);
+    }
+
+    auction.tokenDecimals = TOKENS[tokenSymbol].decimals;
     return await this.auctionService.createAuction(auction);
   }
 
