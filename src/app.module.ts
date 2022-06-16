@@ -7,6 +7,7 @@ import { DatabaseService } from "./database/database.service";
 import { HealthModule } from "./health/health.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import { AuctionsModule } from "./auctions/auctions.module";
+import { NftsModule } from './nfts/nfts.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuctionsModule } from "./auctions/auctions.module";
     }),
     HealthModule,
     AuctionsModule,
+    NftsModule,
   ],
   controllers: [],
   providers: [],

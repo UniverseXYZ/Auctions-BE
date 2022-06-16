@@ -8,6 +8,8 @@ export class IDataLayerMock implements IDataLayer {
   async createRewardTier(tier: TierDto, auctionId: string) {}
   async getAuction(id: string) {}
   async editRewardTier(tier: TierDto, id: string, tierId: string) {}
-  async removeRewardTier(d: string, tierId: string) {}
-  // async getRewardTiers(id: string) {}
+  async removeRewardTier(id: string, tierId: string) {}
+  async getAllRewardTiers(id: string) {}
+  async getRewardTiers(id: string, tierId: string) {}
+  async getRewardTiersLength(id: string) {}
 }

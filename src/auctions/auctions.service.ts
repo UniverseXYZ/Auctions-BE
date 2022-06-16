@@ -82,8 +82,20 @@ export class AuctionsService {
     };
   }
 
-  // async getRewardTiers(id: string) {
-  //   const rewardTiers = await this.dataLayerService.getRewardTiers(id);
-  //   return rewardTiers[0];
-  // }
+  async getAllRewardTiers(id: string) {
+    const rewardTiers = await this.dataLayerService.getAllRewardTiers(id);
+    return rewardTiers[0];
+  }
+
+  async getRewardTiers(id: string, tierId: string) {
+    const rewardTiers = await this.dataLayerService.getRewardTiers(id, tierId);
+    return rewardTiers.length ? rewardTiers[0] : [];
+  }
+
+  async getRewardTiersLength(id: string) {
+    const rewartTiersCount = await this.dataLayerService.getRewardTiersLength(
+      id
+    );
+    return rewartTiersCount.length ? rewartTiersCount[0].count : 0;
+  }
 }

@@ -5,6 +5,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { Auctions, AuctionsSchema } from "./schemas/auction.schema";
 import { DataLayerService } from "src/data-layer/data-layer.service";
 import { DATA_LAYER_SERVICE } from "../utils/constants";
+import { NftsModule } from "src/nfts/nfts.module";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DATA_LAYER_SERVICE } from "../utils/constants";
         schema: AuctionsSchema,
       },
     ]),
+    NftsModule,
   ],
   providers: [
     AuctionsService,

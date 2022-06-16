@@ -7,6 +7,8 @@ export interface IDataLayer {
   createRewardTier(tier: TierDto, id: string);
   editRewardTier(tier: TierDto, id: string, tierId: string);
   getAuction(id: string);
-  removeRewardTier(d: string, tierId: string);
-  // getRewardTiers(id: string);
+  removeRewardTier(id: string, tierId: string);
+  getAllRewardTiers(id: string);
+  getRewardTiers(id: string, tierId: string);
+  getRewardTiersLength(id: string);
 }

@@ -59,10 +59,35 @@ export class DataLayerService implements IDataLayer {
     return await this.auctionsModel.findOne({ _id: id });
   }
 
-  // async getRewardTiers(id: string) {
-  //   return await this.auctionsModel.aggregate([
-  //     { $match: { _id: castToId(id) } },
-  //     { $project: { rewardTiers: { $concatArrays: "$rewardTiers" }, _id: 0 } },
-  //   ]);
-  // }
+  async getAllRewardTiers(id: string) {
+    return await this.auctionsModel.aggregate([
+      { $match: { _id: castToId(id) } },
+      { $project: { rewardTiers: { $concatArrays: "$rewardTiers" }, _id: 0 } },
+    ]);
+  }
+
+  async getRewardTiers(id: string, tierId: string) {
+    return await this.auctionsModel.aggregate([
+      { $match: { _id: castToId(id) } },
+      {
+        $project: {
+          _id: 0,
+          rewardTiers: {
+            $filter: {
+              input: "$rewardTiers",
+              as: "tiers",
+              cond: { $ne: ["$$tiers._id", castToId(tierId)] },
+            },
+          },
+        },
+      },
+    ]);
+  }
+
+  async getRewardTiersLength(id: string) {
+    return await this.auctionsModel.aggregate([
+      { $match: { _id: castToId(id) } },
+      { $project: { count: { $size: "$rewardTiers" } } },
+    ]);
+  }
 }
