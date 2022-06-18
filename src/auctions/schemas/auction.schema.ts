@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { IsOptional } from "class-validator";
 import { Document } from "mongoose";
 import { RewardTiers, RewardTiersSchema } from "./rewardTiers.schema";
 import { RoyaltySplits, RoyaltySplitsSchema } from "./royaltySplits.schema";
@@ -31,6 +32,15 @@ export class Auctions {
 
   @Prop({ type: [RewardTiersSchema] })
   public rewardTiers: [RewardTiers];
+
+  @Prop()
+  public canceled: boolean;
+
+  @Prop()
+  public finalised: boolean;
+
+  @Prop()
+  public onChain: boolean;
 }
 
 export type AuctionsDocument = Auctions & Document;

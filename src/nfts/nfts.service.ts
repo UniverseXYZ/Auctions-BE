@@ -17,7 +17,7 @@ export class NftsService {
     );
   }
 
-  getNftsAvailability(rewardTiers, userNfts) {
+  getNftsAvailability(rewardTiers: TierDto[], userNfts) {
     if (!rewardTiers.length) {
       return [];
     }

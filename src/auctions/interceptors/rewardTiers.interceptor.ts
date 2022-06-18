@@ -29,14 +29,6 @@ export class RewardTiersExceptionInterceptor implements NestInterceptor {
     }
 
     // * Run before sending a response to the client
-    return next.handle().pipe(
-      map((response: any) => {
-        if (!response) {
-          Exceptions.resourceNotFound();
-        }
-
-        return response;
-      })
-    );
+    return next.handle().pipe(map((response: Response) => response));
   }
 }

@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
   IsArray,
+  IsBoolean,
   IsDateString,
   IsNotEmpty,
   IsNumber,
@@ -75,4 +76,20 @@ export class AuctionDto {
   @Type(() => RoyaltySplitDto)
   @ApiProperty({ type: () => RoyaltySplitDto, isArray: true })
   royaltySplits: RoyaltySplitDto[];
+
+  @IsBoolean()
+  @IsOptional()
+  canceled: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  finalised: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  onChain: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  depositedNfts: [];
 }

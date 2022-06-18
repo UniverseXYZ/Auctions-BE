@@ -4,7 +4,6 @@ import {
   Injectable,
   NestInterceptor,
 } from "@nestjs/common";
-import { isEmpty } from "lodash";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { isValidId } from "../../utils";
@@ -17,21 +16,13 @@ export class AuctionsExceptionInterceptor implements NestInterceptor {
     const http = context.switchToHttp();
     const request = http.getRequest();
 
-    const auctionId = request.params.id;
+    const auctionId = request.params.auctionId;
 
     if (!isValidId(auctionId)) {
       Exceptions.auctionNotFound(auctionId);
     }
 
     // * Run before sending a response to the client
-    return next.handle().pipe(
-      map((response: any) => {
-        if (!response) {
-          Exceptions.resourceNotFound();
-        }
-
-        return response;
-      })
-    );
+    return next.handle().pipe(map((response: Response) => response));
   }
 }

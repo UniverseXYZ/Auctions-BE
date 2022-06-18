@@ -23,9 +23,11 @@ export class AuctionsService {
     };
   }
 
-  async createRewardTier(tier: TierDto, auctionId: string) {
-    const auction = await this.dataLayerService.getAuction(auctionId);
-
+  async createRewardTier(
+    tier: TierDto,
+    auctionId: string,
+    auction: AuctionDto
+  ) {
     const { canceled, onChain, finalised } = auction;
 
     if (!onChain && !canceled && !finalised) {
@@ -35,9 +37,12 @@ export class AuctionsService {
     return { status: REWARD_TIER_MODIFIED_STATUS.notEdited };
   }
 
-  async editRewardTier(tier: TierDto, auctionId: string, tierId: string) {
-    const auction = await this.dataLayerService.getAuction(auctionId);
-
+  async editRewardTier(
+    tier: TierDto,
+    auctionId: string,
+    tierId: string,
+    auction: AuctionDto
+  ) {
     const { canceled, onChain, finalised } = auction;
 
     if (!onChain && !canceled && !finalised) {
@@ -46,6 +51,9 @@ export class AuctionsService {
         auctionId,
         tierId
       );
+
+      if (!editedTier) return;
+
       return editedTier;
     }
 
@@ -55,6 +63,8 @@ export class AuctionsService {
   async removeAuction(auctionId: string) {
     const auction = await this.dataLayerService.getAuction(auctionId);
     let status = AUCTION_CANCELED_STATUS.notCanceled;
+
+    if (!auction) return;
 
     const { depositedNfts, canceled, onChain } = auction;
 
@@ -73,15 +83,27 @@ export class AuctionsService {
     return await this.dataLayerService.getAuction(auctionId);
   }
 
-  async removeRewardTier(auctionId: string, tierId: string) {
-    const auction = await this.dataLayerService.getAuction(auctionId);
+  async removeRewardTier(
+    auctionId: string,
+    tierId: string,
+    auction: AuctionDto
+  ) {
     let status = REWARD_TIER_MODIFIED_STATUS.notCanceled;
 
     const { canceled, onChain, depositedNfts, finalised } = auction;
 
     // * check if the reward tier is not finalised, doesn't have any deposited NFTs, is not onChain and is not canceled
     if (!finalised || !depositedNfts || (!onChain && !canceled)) {
-      await this.dataLayerService.removeRewardTier(auctionId, tierId);
+      const result = await this.dataLayerService.removeRewardTier(
+        auctionId,
+        tierId
+      );
+      if (!result) {
+        return {
+          status,
+        };
+      }
+
       status = REWARD_TIER_MODIFIED_STATUS.canceled;
     }
     return {

@@ -52,20 +52,31 @@ export class AuctionsController {
     @Param("auctionId") auctionId,
     @Query("tierId") tierId
   ) {
-    try {
-      if (!tierId) {
-        return await this.auctionService.createRewardTier(tier, auctionId);
-      } else if ("") {
-        return await this.auctionService.editRewardTier(
-          tier,
-          auctionId,
-          tierId
-        );
-      }
-    } catch (error) {
-      // console.log(error);
-      return error;
+    const auction = await this.auctionService.getAuction(auctionId);
+    if (!auction) {
+      Exceptions.auctionNotFound(auctionId);
     }
+
+    if (!tierId) {
+      return await this.auctionService.createRewardTier(
+        tier,
+        auctionId,
+        auction
+      );
+    }
+
+    const result = await this.auctionService.editRewardTier(
+      tier,
+      auctionId,
+      tierId,
+      auction
+    );
+
+    if (!result) {
+      // throw generic exeption
+      Exceptions.resourceNotFound();
+    }
+    return result;
   }
 
   @UseInterceptors(AuctionsExceptionInterceptor)
@@ -77,7 +88,13 @@ export class AuctionsController {
     required: true,
   })
   async removeAuction(@Param("auctionId") auctionId) {
-    return await this.auctionService.removeAuction(auctionId);
+    const result = await this.auctionService.removeAuction(auctionId);
+
+    if (!result) {
+      Exceptions.auctionNotFound(auctionId);
+    }
+
+    return result;
   }
 
   @UseInterceptors(AuctionsExceptionInterceptor)
@@ -85,7 +102,11 @@ export class AuctionsController {
   @ApiOperation({ summary: "Get auction" })
   async getAuction(@Param("auctionId") auctionId) {
     //TODO: get NFTs name etc
-    return await this.auctionService.getAuction(auctionId);
+    const auction = await this.auctionService.getAuction(auctionId);
+    if (!auction) {
+      Exceptions.auctionNotFound(auctionId);
+    }
+    return auction;
   }
 
   @UseInterceptors(AuctionsExceptionInterceptor)
@@ -96,7 +117,16 @@ export class AuctionsController {
     @Param("auctionId") auctionId,
     @Param("rewardTierId") rewardTierId
   ) {
-    return await this.auctionService.removeRewardTier(auctionId, rewardTierId);
+    const auction = await this.auctionService.getAuction(auctionId);
+    if (!auction) {
+      Exceptions.auctionNotFound(auctionId);
+    }
+
+    return await this.auctionService.removeRewardTier(
+      auctionId,
+      rewardTierId,
+      auction
+    );
   }
 
   @UseInterceptors(AuctionsExceptionInterceptor)

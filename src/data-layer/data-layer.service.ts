@@ -50,6 +50,7 @@ export class DataLayerService implements IDataLayer {
     return await this.auctionsModel.findOneAndUpdate(
       {
         _id: id,
+        rewardTiers: { $elemMatch: { _id: tierId } },
       },
       { $pull: { rewardTiers: { _id: tierId } } }
     );
