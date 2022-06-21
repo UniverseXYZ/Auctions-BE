@@ -42,34 +42,34 @@ export class DataLayerService implements IDataLayer {
     return editedTier;
   }
 
-  async removeAuction(id: string): Promise<any> {
-    return await this.auctionsModel.findOneAndDelete({ _id: id });
+  async removeAuction(auctionId: string): Promise<any> {
+    return await this.auctionsModel.findOneAndDelete({ _id: auctionId });
   }
 
-  async removeRewardTier(id: string, tierId: string): Promise<any> {
+  async removeRewardTier(auctionId: string, tierId: string): Promise<any> {
     return await this.auctionsModel.findOneAndUpdate(
       {
-        _id: id,
+        _id: auctionId,
         rewardTiers: { $elemMatch: { _id: tierId } },
       },
       { $pull: { rewardTiers: { _id: tierId } } }
     );
   }
 
-  async getAuction(id: string) {
-    return await this.auctionsModel.findOne({ _id: id });
+  async getAuction(auctionId: string) {
+    return await this.auctionsModel.findOne({ _id: auctionId });
   }
 
-  async getAllRewardTiers(id: string) {
+  async getAllRewardTiers(auctionId: string) {
     return await this.auctionsModel.aggregate([
-      { $match: { _id: castToId(id) } },
+      { $match: { _id: castToId(auctionId) } },
       { $project: { rewardTiers: { $concatArrays: "$rewardTiers" }, _id: 0 } },
     ]);
   }
 
-  async getRewardTiers(id: string, tierId: string) {
+  async getRewardTiers(auctionId: string, tierId: string) {
     return await this.auctionsModel.aggregate([
-      { $match: { _id: castToId(id) } },
+      { $match: { _id: castToId(auctionId) } },
       {
         $project: {
           _id: 0,
@@ -85,9 +85,9 @@ export class DataLayerService implements IDataLayer {
     ]);
   }
 
-  async getRewardTiersLength(id: string) {
+  async getRewardTiersLength(auctionId: string) {
     return await this.auctionsModel.aggregate([
-      { $match: { _id: castToId(id) } },
+      { $match: { _id: castToId(auctionId) } },
       { $project: { count: { $size: "$rewardTiers" } } },
     ]);
   }

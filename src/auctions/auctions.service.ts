@@ -88,7 +88,7 @@ export class AuctionsService {
     tierId: string,
     auction: AuctionDto
   ) {
-    let status = REWARD_TIER_MODIFIED_STATUS.notCanceled;
+    let status = REWARD_TIER_MODIFIED_STATUS.notDeleted;
 
     const { canceled, onChain, depositedNfts, finalised } = auction;
 
