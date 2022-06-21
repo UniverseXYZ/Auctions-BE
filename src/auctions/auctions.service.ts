@@ -28,13 +28,15 @@ export class AuctionsService {
     auctionId: string,
     auction: AuctionDto
   ) {
-    const { canceled, onChain, finalised } = auction;
+    const { depositedNfts, canceled, finalised, startDate, onChain } = auction;
 
-    if (!onChain && !canceled && !finalised) {
-      return await this.dataLayerService.createRewardTier(tier, auctionId);
+    const now = new Date();
+    const started = now >= startDate;
+
+    if (started || finalised || depositedNfts || (onChain && !canceled)) {
+      return { status: REWARD_TIER_MODIFIED_STATUS.notEdited };
     }
-
-    return { status: REWARD_TIER_MODIFIED_STATUS.notEdited };
+    return await this.dataLayerService.createRewardTier(tier, auctionId);
   }
 
   async editRewardTier(
@@ -43,21 +45,24 @@ export class AuctionsService {
     tierId: string,
     auction: AuctionDto
   ) {
-    const { canceled, onChain, finalised } = auction;
+    const { depositedNfts, canceled, finalised, startDate, onChain } = auction;
 
-    if (!onChain && !canceled && !finalised) {
-      const editedTier = await this.dataLayerService.editRewardTier(
-        tier,
-        auctionId,
-        tierId
-      );
+    const now = new Date();
+    const started = now >= startDate;
 
-      if (!editedTier) return;
-
-      return editedTier;
+    if (started || finalised || depositedNfts || (onChain && !canceled)) {
+      return { status: REWARD_TIER_MODIFIED_STATUS.notEdited };
     }
 
-    return { status: REWARD_TIER_MODIFIED_STATUS.notEdited };
+    const editedTier = await this.dataLayerService.editRewardTier(
+      tier,
+      auctionId,
+      tierId
+    );
+
+    if (!editedTier) return;
+
+    return editedTier;
   }
 
   async removeAuction(auctionId: string) {
