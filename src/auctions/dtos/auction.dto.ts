@@ -2,15 +2,17 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
   IsArray,
+  IsBoolean,
   IsDateString,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Length,
   Matches,
   ValidateNested,
 } from "class-validator";
-import { ETHEREUM_ADDRESS } from "../../utils";
+import { ETHEREUM_ADDRESS } from "../../utils/constants";
 import { RoyaltySplitDto } from "./royaltySplits.dto";
 
 export class AuctionDto {
@@ -51,11 +53,8 @@ export class AuctionDto {
   @IsString()
   tokenSymbol: string;
 
-  @ApiProperty({
-    description: "Number of decimals of the bidding token",
-    example: 18,
-  })
   @IsNumber()
+  @IsOptional()
   tokenDecimals: number;
 
   @ApiProperty({
@@ -77,4 +76,20 @@ export class AuctionDto {
   @Type(() => RoyaltySplitDto)
   @ApiProperty({ type: () => RoyaltySplitDto, isArray: true })
   royaltySplits: RoyaltySplitDto[];
+
+  @IsBoolean()
+  @IsOptional()
+  canceled: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  finalised: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  onChain: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  depositedNfts: [];
 }

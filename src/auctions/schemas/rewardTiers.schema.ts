@@ -10,9 +10,6 @@ export class RewardTiers {
   @Prop({ required: true })
   public numberOfWinners: number;
 
-  @Prop({ trim: true, required: true })
-  public nftsPerWinner: string;
-
   @Prop({ type: [NftSlotsSchema], required: true })
   public nftSlots: [NftSlots];
 }

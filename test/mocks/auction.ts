@@ -3,7 +3,6 @@ export const mockAuction = {
   name: "Auction1",
   tokenAddress: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
   tokenSymbol: "XYZ",
-  tokenDecimals: 18,
   startDate: new Date(),
   endDate: new Date(),
   royaltySplits: [

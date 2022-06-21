@@ -7,6 +7,9 @@ import { DatabaseService } from "./database/database.service";
 import { HealthModule } from "./health/health.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import { AuctionsModule } from "./auctions/auctions.module";
+import { NftsModule } from "./nfts/nfts.module";
+import { APP_FILTER } from "@nestjs/core";
+import { ExceptionsFilter } from "./errors/exceptions.filter";
 
 @Module({
   imports: [
@@ -23,8 +26,14 @@ import { AuctionsModule } from "./auctions/auctions.module";
     }),
     HealthModule,
     AuctionsModule,
+    NftsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: ExceptionsFilter,
+    },
+  ],
 })
 export class AppModule {}

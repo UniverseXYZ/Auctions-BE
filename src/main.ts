@@ -1,5 +1,4 @@
 import { NestFactory } from "@nestjs/core";
-import { AuctionsModule } from "./auctions/auctions.module";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { ConfigService } from "@nestjs/config";
 import helmet from "helmet";
