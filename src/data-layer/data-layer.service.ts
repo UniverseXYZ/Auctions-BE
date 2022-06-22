@@ -91,4 +91,85 @@ export class DataLayerService implements IDataLayer {
       { $project: { count: { $size: "$rewardTiers" } } },
     ]);
   }
+
+  async getMyActiveAuctionsCount(user: string): Promise<number> {
+    return await this.auctionsModel
+      .find({
+        owner: user,
+        onChain: true,
+        startDate: { $lt: new Date() },
+        endDate: { $gt: new Date() },
+        canceled: { $in: [false, undefined] },
+      })
+      .count();
+  }
+
+  async getMyPastAuctionsCount(user: string): Promise<number> {
+    return await this.auctionsModel
+      .find({
+        owner: user,
+        onChain: true,
+        endDate: { $lt: new Date() },
+        canceled: { $in: [false, undefined] },
+      })
+      .count();
+  }
+
+  async getMyDraftAuctionsCount(user: string) {
+    return await this.auctionsModel
+      .find({
+        owner: user,
+        $or: [
+          { startDate: { $gt: new Date() } },
+          {
+            startDate: { $lt: new Date() },
+            onChain: { $in: [false, undefined] },
+          },
+          { startDate: { $lt: new Date() }, onChain: true, canceled: true },
+        ],
+      })
+      .count();
+  }
+
+  async getMyActiveAuctions(user: string, limit: number, offset: number) {
+    return await this.auctionsModel
+      .find({
+        owner: user,
+        onChain: true,
+        startDate: { $lt: new Date() },
+        endDate: { $gt: new Date() },
+        canceled: { $in: [false, undefined] },
+      })
+      .skip(offset)
+      .limit(limit);
+  }
+
+  async getMyPastAuctions(user: string, limit: number, offset: number) {
+    return await this.auctionsModel
+      .find({
+        owner: user,
+        onChain: true,
+        endDate: { $lt: new Date() },
+        canceled: { $in: [false, undefined] },
+      })
+      .skip(offset)
+      .limit(limit);
+  }
+
+  async getMyDraftAuctions(user: string, limit: number, offset: number) {
+    return await this.auctionsModel
+      .find({
+        owner: user,
+        $or: [
+          { startDate: { $gt: new Date() } },
+          {
+            startDate: { $lt: new Date() },
+            onChain: { $in: [false, undefined] },
+          },
+          { startDate: { $lt: new Date() }, onChain: true, canceled: true },
+        ],
+      })
+      .skip(offset)
+      .limit(limit);
+  }
 }

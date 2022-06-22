@@ -11,4 +11,10 @@ export interface IDataLayer {
   getAllRewardTiers(id: string);
   getRewardTiers(id: string, tierId: string);
   getRewardTiersLength(id: string);
+  getMyActiveAuctions(user: string, limit: number, offset: number);
+  getMyPastAuctions(user: string, limit: number, offset: number);
+  getMyDraftAuctions(user: string, limit: number, offset: number);
+  getMyActiveAuctionsCount(user: string);
+  getMyPastAuctionsCount(user: string);
+  getMyDraftAuctionsCount(user: string);
 }

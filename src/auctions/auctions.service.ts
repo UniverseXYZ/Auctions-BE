@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import {
   AUCTION_CANCELED_STATUS,
   REWARD_TIER_MODIFIED_STATUS,
-} from "src/utils/constants";
+} from "../utils/constants";
 import { IDataLayer } from "../data-layer/IDataLayer";
 import { DATA_LAYER_SERVICE } from "../utils/constants";
 import { AuctionDto } from "./dtos/auction.dto";
@@ -136,5 +136,29 @@ export class AuctionsService {
       auctionId
     );
     return rewartTiersCount.length ? rewartTiersCount[0].count : 0;
+  }
+
+  async getMyActiveAuctions(user: string, limit: number, offset: number) {
+    return this.dataLayerService.getMyActiveAuctions(user, limit, offset);
+  }
+
+  async getMyPastAuctions(user: string, limit: number, offset: number) {
+    return this.dataLayerService.getMyPastAuctions(user, limit, offset);
+  }
+
+  async getMyDraftAuctions(user: string, limit: number, offset: number) {
+    return this.dataLayerService.getMyDraftAuctions(user, limit, offset);
+  }
+
+  async getMyActiveAuctionsCount(user: string) {
+    return this.dataLayerService.getMyActiveAuctionsCount(user);
+  }
+
+  async getMyPastAuctionsCount(user: string) {
+    return this.dataLayerService.getMyPastAuctionsCount(user);
+  }
+
+  async getMyDraftAuctionsCount(user: string) {
+    return this.dataLayerService.getMyDraftAuctionsCount(user);
   }
 }

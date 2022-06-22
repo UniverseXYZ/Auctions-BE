@@ -27,7 +27,7 @@ export class Auctions {
   @Prop({ required: true })
   public endDate: Date;
 
-  @Prop({ type: [RoyaltySplitsSchema], required: true })
+  @Prop({ type: [RoyaltySplitsSchema] })
   public royaltySplits: [RoyaltySplits];
 
   @Prop({ type: [RewardTiersSchema] })
