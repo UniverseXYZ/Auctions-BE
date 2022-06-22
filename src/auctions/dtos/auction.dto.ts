@@ -13,6 +13,7 @@ import {
   ValidateNested,
 } from "class-validator";
 import { ETHEREUM_ADDRESS } from "../../utils/constants";
+import { Nft } from "./nft.dto";
 import { RoyaltySplitDto } from "./royaltySplits.dto";
 
 export class AuctionDto {
@@ -89,7 +90,8 @@ export class AuctionDto {
   @IsOptional()
   onChain?: boolean;
 
-  @IsBoolean()
+  @IsArray()
+  @Type(() => Nft)
   @IsOptional()
-  depositedNfts?: [];
+  depositedNfts?: Nft[];
 }
