@@ -14,6 +14,7 @@ import {
 } from "class-validator";
 import { ETHEREUM_ADDRESS } from "../../utils/constants";
 import { Nft } from "./nft.dto";
+import { TierDto } from "./rewardTier.dto";
 import { RoyaltySplitDto } from "./royaltySplits.dto";
 
 export class AuctionDto {
@@ -35,6 +36,10 @@ export class AuctionDto {
   @IsString()
   @Length(1, 100)
   name: string;
+
+  @IsString()
+  @IsOptional()
+  link: string;
 
   @ApiProperty({
     description: "Address of the bidding token",
@@ -94,4 +99,10 @@ export class AuctionDto {
   @Type(() => Nft)
   @IsOptional()
   depositedNfts?: Nft[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => TierDto)
+  @IsOptional()
+  rewardTiers: TierDto[];
 }

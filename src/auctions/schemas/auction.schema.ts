@@ -41,6 +41,9 @@ export class Auctions {
 
   @Prop()
   public onChain: boolean;
+
+  @Prop()
+  public link: string;
 }
 
 export type AuctionsDocument = Auctions & Document;

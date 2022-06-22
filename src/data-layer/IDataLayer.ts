@@ -17,4 +17,6 @@ export interface IDataLayer {
   getMyActiveAuctionsCount(user: string);
   getMyPastAuctionsCount(user: string);
   getMyDraftAuctionsCount(user: string);
+  editAuction(auctionId: string, auction: AuctionDto);
+  checkUrlAvailability(owner: string, link: string);
 }
