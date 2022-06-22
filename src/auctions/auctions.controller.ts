@@ -129,7 +129,7 @@ export class AuctionsController {
     );
   }
 
-  @UseInterceptors(AuctionsExceptionInterceptor)
+  @UseInterceptors(RewardTiersExceptionInterceptor)
   @Get("/:auctionId/availability")
   @ApiOperation({ summary: "Get available NFTs" })
   async getAvailableNfts(
@@ -138,6 +138,13 @@ export class AuctionsController {
     @Query("tierId") tierId,
     @Query("page") page
   ) {
+    //check if the auction exists
+    const auction = await this.auctionService.getAuction(auctionId);
+
+    if (!auction) {
+      Exceptions.auctionNotFound(auctionId);
+    }
+
     //get reward tiers count
     const rewardTiersLength = await this.auctionService.getRewardTiersLength(
       auctionId
@@ -166,7 +173,7 @@ export class AuctionsController {
       }
     }
 
-    const rewardTiersResult = await this.auctionService.getRewardTiers(
+    const rewardTiersResult = await this.auctionService.getRewardTiersExcept(
       auctionId,
       tierId
     );
@@ -177,5 +184,93 @@ export class AuctionsController {
     );
 
     return nftsWithFlag;
+  }
+
+  @Get("/my-auctions/active")
+  @ApiOperation({ summary: "Get my active auctions" })
+  async getMyActiveAuctions(
+    @Req() req,
+    @Query("limit") limit,
+    @Query("offset") offset
+  ) {
+    //! TODO: get address via url param or userId?
+    const hardcodedOwner = "0x13BBDC67f17A0C257eF67328C658950573A16aDe";
+    if (!hardcodedOwner) return [];
+
+    const activeAuctionsCount =
+      await this.auctionService.getMyActiveAuctionsCount(hardcodedOwner);
+
+    const _limit = Number(limit) || 5;
+    const _offset = Number(offset) || 0;
+
+    const activeAuctions = await this.auctionService.getMyActiveAuctions(
+      hardcodedOwner,
+      _limit,
+      _offset
+    );
+    return {
+      activeAuctions: activeAuctions,
+      total: activeAuctionsCount,
+      offset: _offset,
+    };
+  }
+
+  @Get("/my-auctions/past")
+  @ApiOperation({ summary: "Get my past auctions" })
+  async getMyPastAuctions(
+    @Req() req,
+    @Query("limit") limit,
+    @Query("offset") offset
+  ) {
+    //! TODO: get address via url param or userId?
+    const hardcodedOwner = "0x13BBDC67f17A0C257eF67328C658950573A16aDe";
+    if (!hardcodedOwner) return [];
+
+    const pastAuctionsCount = await this.auctionService.getMyPastAuctionsCount(
+      hardcodedOwner
+    );
+
+    const _limit = Number(limit) || 5;
+    const _offset = Number(offset) || 0;
+
+    const pastAuctions = await this.auctionService.getMyPastAuctions(
+      hardcodedOwner,
+      _limit,
+      _offset
+    );
+    return {
+      pastAuctions: pastAuctions,
+      total: pastAuctionsCount,
+      offset: _offset,
+    };
+  }
+
+  @Get("/my-auctions/draft")
+  @ApiOperation({ summary: "Get my draft auctions" })
+  async getMyDraftAuctions(
+    @Req() req,
+    @Query("limit") limit,
+    @Query("offset") offset
+  ) {
+    //! TODO: get address via url param or userId?
+    const hardcodedOwner = "0x13BBDC67f17A0C257eF67328C658950573A16aDe";
+    if (!hardcodedOwner) return [];
+
+    const draftAuctionsCount =
+      await this.auctionService.getMyDraftAuctionsCount(hardcodedOwner);
+
+    const _limit = Number(limit) || 5;
+    const _offset = Number(offset) || 0;
+
+    const draftAuctions = await this.auctionService.getMyDraftAuctions(
+      hardcodedOwner,
+      _limit,
+      _offset
+    );
+    return {
+      draftAuctions: draftAuctions,
+      total: draftAuctionsCount,
+      offset: _offset,
+    };
   }
 }

@@ -2,7 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { mockAuction } from "../../test/mocks/auction";
 import { IDataLayerMock } from "../../test/mocks/IDataLayer";
 import { IDataLayer } from "../data-layer/IDataLayer";
-import { DATA_LAYER_SERVICE } from "../utils";
+import { DATA_LAYER_SERVICE } from "../utils/constants";
 import { AuctionsService } from "./auctions.service";
 
 describe("Auctions Service", () => {

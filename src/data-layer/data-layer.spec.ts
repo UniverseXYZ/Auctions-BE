@@ -36,6 +36,8 @@ describe("Data Layer Service", () => {
 
   it("should call create with the correct auction", async () => {
     jest.spyOn(auctionsModel, "create");
+    //@ts-ignore - just for the data layer test
+    mockAuction.tokenDecimals = 18;
     await service.createAuction(mockAuction);
     expect(auctionsModel.create).toBeCalledWith(mockAuction);
   });

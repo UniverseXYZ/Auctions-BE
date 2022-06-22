@@ -12,4 +12,10 @@ export class IDataLayerMock implements IDataLayer {
   async getAllRewardTiers(id: string) {}
   async getRewardTiers(id: string, tierId: string) {}
   async getRewardTiersLength(id: string) {}
+  async getMyActiveAuctions(user: string, limit: number, offset: number) {}
+  async getMyPastAuctions(user: string, limit: number, offset: number) {}
+  async getMyDraftAuctions(user: string, limit: number, offset: number) {}
+  async getMyActiveAuctionsCount(user: string) {}
+  async getMyPastAuctionsCount(user: string) {}
+  async getMyDraftAuctionsCount(user: string) {}
 }

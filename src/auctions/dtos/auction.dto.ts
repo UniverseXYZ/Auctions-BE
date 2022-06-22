@@ -13,6 +13,7 @@ import {
   ValidateNested,
 } from "class-validator";
 import { ETHEREUM_ADDRESS } from "../../utils/constants";
+import { Nft } from "./nft.dto";
 import { RoyaltySplitDto } from "./royaltySplits.dto";
 
 export class AuctionDto {
@@ -55,7 +56,7 @@ export class AuctionDto {
 
   @IsNumber()
   @IsOptional()
-  tokenDecimals: number;
+  tokenDecimals?: number;
 
   @ApiProperty({
     description: "Start date of the auction in ISO format",
@@ -74,22 +75,23 @@ export class AuctionDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => RoyaltySplitDto)
-  @ApiProperty({ type: () => RoyaltySplitDto, isArray: true })
+  @IsOptional()
   royaltySplits: RoyaltySplitDto[];
 
   @IsBoolean()
   @IsOptional()
-  canceled: boolean;
+  canceled?: boolean;
 
   @IsBoolean()
   @IsOptional()
-  finalised: boolean;
+  finalised?: boolean;
 
   @IsBoolean()
   @IsOptional()
-  onChain: boolean;
+  onChain?: boolean;
 
-  @IsBoolean()
+  @IsArray()
+  @Type(() => Nft)
   @IsOptional()
-  depositedNfts: [];
+  depositedNfts?: Nft[];
 }
