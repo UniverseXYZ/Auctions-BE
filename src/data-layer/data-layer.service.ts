@@ -30,7 +30,7 @@ export class DataLayerService implements IDataLayer {
     tier: TierDto,
     auctionId: string,
     tierId: string
-  ): Promise<any> {
+  ): Promise<AuctionDto> {
     const editedTier = await this.auctionsModel.findOneAndUpdate(
       {
         _id: auctionId,
@@ -42,8 +42,10 @@ export class DataLayerService implements IDataLayer {
     return editedTier;
   }
 
-  async removeAuction(auctionId: string): Promise<any> {
-    return await this.auctionsModel.findOneAndDelete({ _id: auctionId });
+  async removeAuction(auctionId: string): Promise<AuctionDto> {
+    const test = await this.auctionsModel.findOneAndDelete({ _id: auctionId });
+    console.log(test);
+    return test;
   }
 
   async removeRewardTier(auctionId: string, tierId: string): Promise<any> {
@@ -67,7 +69,7 @@ export class DataLayerService implements IDataLayer {
     ]);
   }
 
-  async getRewardTiers(auctionId: string, tierId: string) {
+  async getRewardTiersExcept(auctionId: string, tierId: string) {
     return await this.auctionsModel.aggregate([
       { $match: { _id: castToId(auctionId) } },
       {

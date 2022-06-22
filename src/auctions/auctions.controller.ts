@@ -173,7 +173,7 @@ export class AuctionsController {
       }
     }
 
-    const rewardTiersResult = await this.auctionService.getRewardTiers(
+    const rewardTiersResult = await this.auctionService.getRewardTiersExcept(
       auctionId,
       tierId
     );

@@ -123,8 +123,8 @@ export class AuctionsService {
     return rewardTiers[0];
   }
 
-  async getRewardTiers(auctionId: string, tierId: string) {
-    const rewardTiers = await this.dataLayerService.getRewardTiers(
+  async getRewardTiersExcept(auctionId: string, tierId: string) {
+    const rewardTiers = await this.dataLayerService.getRewardTiersExcept(
       auctionId,
       tierId
     );

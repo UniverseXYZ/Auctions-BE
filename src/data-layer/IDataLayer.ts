@@ -9,7 +9,7 @@ export interface IDataLayer {
   getAuction(id: string);
   removeRewardTier(id: string, tierId: string);
   getAllRewardTiers(id: string);
-  getRewardTiers(id: string, tierId: string);
+  getRewardTiersExcept(id: string, tierId: string);
   getRewardTiersLength(id: string);
   getMyActiveAuctions(user: string, limit: number, offset: number);
   getMyPastAuctions(user: string, limit: number, offset: number);
