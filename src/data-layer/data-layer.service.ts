@@ -72,7 +72,10 @@ export class DataLayerService implements IDataLayer {
     ]);
   }
 
-  async getRewardTiersExcept(auctionId: string, tierId: string) {
+  async getRewardTiersExcept(
+    auctionId: string,
+    tierId: string
+  ): Promise<{ rewardTiers: [] }[]> {
     return await this.auctionsModel.aggregate([
       { $match: { _id: castToId(auctionId) } },
       {
