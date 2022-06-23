@@ -161,4 +161,20 @@ export class AuctionsService {
   async getMyDraftAuctionsCount(user: string) {
     return this.dataLayerService.getMyDraftAuctionsCount(user);
   }
+
+  async editAuction(auctionId: string, auction: AuctionDto) {
+    return this.dataLayerService.editAuction(auctionId, auction);
+  }
+
+  async checkUrlAvailability(owner: string, link: string) {
+    const result = await this.dataLayerService.checkUrlAvailability(
+      owner,
+      link
+    );
+    if (!result) {
+      return { existingPage: false };
+    }
+
+    return { existingPage: true };
+  }
 }

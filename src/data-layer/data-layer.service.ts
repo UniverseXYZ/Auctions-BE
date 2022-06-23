@@ -14,11 +14,14 @@ export class DataLayerService implements IDataLayer {
     @InjectModel(Auctions.name)
     private readonly auctionsModel: Model<AuctionsDocument>
   ) {}
-  async createAuction(auction: AuctionDto) {
+  async createAuction(auction: AuctionDto): Promise<AuctionsDocument> {
     return await this.auctionsModel.create(auction);
   }
 
-  async createRewardTier(tier: TierDto, auctionId: string): Promise<any> {
+  async createRewardTier(
+    tier: TierDto,
+    auctionId: string
+  ): Promise<AuctionsDocument> {
     return await this.auctionsModel.findOneAndUpdate(
       { _id: auctionId },
       { $push: { rewardTiers: tier } },
@@ -30,7 +33,7 @@ export class DataLayerService implements IDataLayer {
     tier: TierDto,
     auctionId: string,
     tierId: string
-  ): Promise<AuctionDto> {
+  ): Promise<AuctionsDocument> {
     const editedTier = await this.auctionsModel.findOneAndUpdate(
       {
         _id: auctionId,
@@ -42,10 +45,8 @@ export class DataLayerService implements IDataLayer {
     return editedTier;
   }
 
-  async removeAuction(auctionId: string): Promise<AuctionDto> {
-    const test = await this.auctionsModel.findOneAndDelete({ _id: auctionId });
-    console.log(test);
-    return test;
+  async removeAuction(auctionId: string): Promise<AuctionsDocument> {
+    return await this.auctionsModel.findOneAndDelete({ _id: auctionId });
   }
 
   async removeRewardTier(auctionId: string, tierId: string): Promise<any> {
@@ -58,18 +59,23 @@ export class DataLayerService implements IDataLayer {
     );
   }
 
-  async getAuction(auctionId: string) {
+  async getAuction(auctionId: string): Promise<AuctionsDocument> {
     return await this.auctionsModel.findOne({ _id: auctionId });
   }
 
-  async getAllRewardTiers(auctionId: string) {
+  async getAllRewardTiers(
+    auctionId: string
+  ): Promise<{ rewardTiers: [] }[] | []> {
     return await this.auctionsModel.aggregate([
       { $match: { _id: castToId(auctionId) } },
       { $project: { rewardTiers: { $concatArrays: "$rewardTiers" }, _id: 0 } },
     ]);
   }
 
-  async getRewardTiersExcept(auctionId: string, tierId: string) {
+  async getRewardTiersExcept(
+    auctionId: string,
+    tierId: string
+  ): Promise<{ rewardTiers: [] }[]> {
     return await this.auctionsModel.aggregate([
       { $match: { _id: castToId(auctionId) } },
       {
@@ -87,7 +93,7 @@ export class DataLayerService implements IDataLayer {
     ]);
   }
 
-  async getRewardTiersLength(auctionId: string) {
+  async getRewardTiersLength(auctionId: string): Promise<{ count: number }[]> {
     return await this.auctionsModel.aggregate([
       { $match: { _id: castToId(auctionId) } },
       { $project: { count: { $size: "$rewardTiers" } } },
@@ -117,7 +123,7 @@ export class DataLayerService implements IDataLayer {
       .count();
   }
 
-  async getMyDraftAuctionsCount(user: string) {
+  async getMyDraftAuctionsCount(user: string): Promise<number> {
     return await this.auctionsModel
       .find({
         owner: user,
@@ -133,7 +139,11 @@ export class DataLayerService implements IDataLayer {
       .count();
   }
 
-  async getMyActiveAuctions(user: string, limit: number, offset: number) {
+  async getMyActiveAuctions(
+    user: string,
+    limit: number,
+    offset: number
+  ): Promise<AuctionsDocument[]> {
     return await this.auctionsModel
       .find({
         owner: user,
@@ -146,7 +156,11 @@ export class DataLayerService implements IDataLayer {
       .limit(limit);
   }
 
-  async getMyPastAuctions(user: string, limit: number, offset: number) {
+  async getMyPastAuctions(
+    user: string,
+    limit: number,
+    offset: number
+  ): Promise<AuctionsDocument[]> {
     return await this.auctionsModel
       .find({
         owner: user,
@@ -158,7 +172,11 @@ export class DataLayerService implements IDataLayer {
       .limit(limit);
   }
 
-  async getMyDraftAuctions(user: string, limit: number, offset: number) {
+  async getMyDraftAuctions(
+    user: string,
+    limit: number,
+    offset: number
+  ): Promise<AuctionsDocument[]> {
     return await this.auctionsModel
       .find({
         owner: user,
@@ -173,5 +191,28 @@ export class DataLayerService implements IDataLayer {
       })
       .skip(offset)
       .limit(limit);
+  }
+
+  async editAuction(
+    auctionId: string,
+    auction: AuctionDto
+  ): Promise<AuctionsDocument> {
+    return await this.auctionsModel.findOneAndReplace(
+      {
+        _id: auctionId,
+      },
+      auction,
+      { new: true }
+    );
+  }
+
+  async checkUrlAvailability(
+    owner: string,
+    link: string
+  ): Promise<AuctionsDocument> {
+    return await this.auctionsModel.findOne({
+      owner: owner,
+      link: link,
+    });
   }
 }

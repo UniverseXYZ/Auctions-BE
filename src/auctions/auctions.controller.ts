@@ -273,4 +273,36 @@ export class AuctionsController {
       offset: _offset,
     };
   }
+
+  @UseInterceptors(AuctionsExceptionInterceptor)
+  @Patch("/:auctionId")
+  @ApiOperation({ summary: "Edit auction" })
+  async editAuction(
+    @Param("auctionId") auctionId,
+    @Body() auction: AuctionDto
+  ) {
+    const auctionToEdit = await this.auctionService.getAuction(auctionId);
+
+    if (!auctionToEdit) {
+      return Exceptions.auctionNotFound(auctionId);
+    }
+
+    const { tokenSymbol } = auction;
+    const allowedTokens = this.tokens.getTokens();
+
+    if (!allowedTokens[tokenSymbol]) {
+      Exceptions.tokenNotAllowed(tokenSymbol);
+    }
+
+    auction.tokenDecimals = allowedTokens[tokenSymbol].decimals;
+    return this.auctionService.editAuction(auctionId, auction);
+  }
+
+  @Get("/page/validate/:url")
+  @ApiOperation({ summary: "Check auction url availability" })
+  async checkUrlAvailability(@Param("url") url, @Req() req) {
+    //! TODO: get address via url param or userId?
+    const hardcodedOwner = "0x13BBDC67f17A0C257eF67328C658950573A16aDe";
+    return await this.auctionService.checkUrlAvailability(hardcodedOwner, url);
+  }
 }

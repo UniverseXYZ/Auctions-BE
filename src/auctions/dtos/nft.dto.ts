@@ -8,6 +8,6 @@ export class Nft {
     message: ETHEREUM_ADDRESS.INVALID_MESSAGE,
   })
   contractAddress: string;
-  @IsNumber()
+  @IsString()
   tokenId: string;
 }

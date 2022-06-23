@@ -7,6 +7,7 @@ import { DataLayerService } from "src/data-layer/data-layer.service";
 import { DATA_LAYER_SERVICE } from "../utils/constants";
 import { NftsModule } from "src/nfts/nfts.module";
 import { Tokens } from "../utils/tokens";
+import { AuctionGateway } from "./auctions.gateway";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { Tokens } from "../utils/tokens";
   providers: [
     AuctionsService,
     Tokens,
+    AuctionGateway,
     {
       useClass: DataLayerService,
       provide: DATA_LAYER_SERVICE,
