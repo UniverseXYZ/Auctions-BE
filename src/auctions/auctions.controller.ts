@@ -308,6 +308,7 @@ export class AuctionsController {
     const hardcodedOwner = "0x13BBDC67f17A0C257eF67328C658950573A16aDe";
     return await this.auctionService.checkUrlAvailability(hardcodedOwner, url);
   }
+
   @Post("/:auctionId/images")
   @ApiOperation({ summary: "Upload auction images" })
   @UseInterceptors(
@@ -335,6 +336,17 @@ export class AuctionsController {
       auction,
       promoImage,
       backgroundImage
+    );
+  }
+
+  @Get("/page/name/:name")
+  @ApiOperation({ summary: "Check auction name availability" })
+  async checkAuctionNameAvailability(@Param("name") name, @Req() req) {
+    //! TODO: get address via url param or userId?
+    const hardcodedOwner = "0x13BBDC67f17A0C257eF67328C658950573A16aDe";
+    return await this.auctionService.checkAuctionNameAvailability(
+      hardcodedOwner,
+      name
     );
   }
 }

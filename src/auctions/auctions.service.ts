@@ -173,7 +173,7 @@ export class AuctionsService {
   async checkUrlAvailability(owner: string, link: string) {
     const result = await this.dataLayerService.checkUrlAvailability(
       owner,
-      link
+      link.trim()
     );
     if (!result) {
       return { existingPage: false };
@@ -218,5 +218,17 @@ export class AuctionsService {
       await this.proccessImage(auction, promoImage),
       await this.proccessImage(auction, backgroundImage)
     );
+  }
+
+  async checkAuctionNameAvailability(owner: string, name: string) {
+    const result = await this.dataLayerService.checkAuctionNameAvailability(
+      owner,
+      name.trim()
+    );
+    if (!result) {
+      return { existingName: false };
+    }
+
+    return { existingName: true };
   }
 }

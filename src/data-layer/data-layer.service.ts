@@ -233,4 +233,14 @@ export class DataLayerService implements IDataLayer {
       { new: true, omitUndefined: true }
     );
   }
+
+  async checkAuctionNameAvailability(
+    owner: string,
+    name: string
+  ): Promise<AuctionsDocument> {
+    return await this.auctionsModel.findOne({
+      owner: owner,
+      name: name,
+    });
+  }
 }
