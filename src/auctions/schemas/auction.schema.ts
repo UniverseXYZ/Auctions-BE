@@ -44,6 +44,12 @@ export class Auctions {
 
   @Prop()
   public link: string;
+
+  @Prop()
+  public promoImageUrl: string;
+
+  @Prop()
+  public backgroundImageUrl: string;
 }
 
 export type AuctionsDocument = Auctions & Document;

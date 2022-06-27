@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { TierDto } from "../auctions/dtos/rewardTier.dto";
 import { castToId } from "../utils";
 import { AuctionDto } from "../auctions/dtos/auction.dto";
@@ -214,5 +214,56 @@ export class DataLayerService implements IDataLayer {
       owner: owner,
       link: link,
     });
+  }
+  async uploadAuctionImages(
+    auctionId: string,
+    promoImage: string | null | undefined,
+    backgroundImage: string | null | undefined
+  ) {
+    return await this.auctionsModel.findOneAndUpdate(
+      {
+        _id: auctionId,
+      },
+      {
+        $set: {
+          promoImageUrl: promoImage,
+          backgroundImageUrl: backgroundImage,
+        },
+      },
+      { new: true, omitUndefined: true }
+    );
+  }
+
+  async checkAuctionNameAvailability(
+    owner: string,
+    name: string
+  ): Promise<AuctionsDocument> {
+    return await this.auctionsModel.findOne({
+      owner: owner,
+      name: name,
+    });
+  }
+
+  async checkTierNameAvailability(
+    owner: string,
+    auctionId: string,
+    name: string
+  ) {
+    return this.auctionsModel.aggregate([
+      { $match: { owner: owner, _id: castToId(auctionId) } },
+      {
+        $project: {
+          _id: 0,
+          tier: {
+            $filter: {
+              input: "$rewardTiers",
+              as: "tiers",
+              cond: { $eq: ["$$tiers.name", name] },
+            },
+          },
+        },
+      },
+      { $unwind: "$tier" },
+    ]);
   }
 }

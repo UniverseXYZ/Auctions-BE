@@ -7,12 +7,16 @@ import { IDataLayer } from "../data-layer/IDataLayer";
 import { DATA_LAYER_SERVICE } from "../utils/constants";
 import { AuctionDto } from "./dtos/auction.dto";
 import { TierDto } from "./dtos/rewardTier.dto";
+import { S3Service } from "./file-storage/file-storage.service";
+import { FileSystemService } from "./file-system/file-system.service";
 
 @Injectable()
 export class AuctionsService {
   constructor(
     @Inject(DATA_LAYER_SERVICE)
-    private readonly dataLayerService: IDataLayer
+    private readonly dataLayerService: IDataLayer,
+    private s3Service: S3Service,
+    private fileSystemService: FileSystemService
   ) {}
 
   async createAuction(auction: AuctionDto) {
@@ -169,12 +173,82 @@ export class AuctionsService {
   async checkUrlAvailability(owner: string, link: string) {
     const result = await this.dataLayerService.checkUrlAvailability(
       owner,
-      link
+      link.trim()
     );
     if (!result) {
       return { existingPage: false };
     }
 
     return { existingPage: true };
+  }
+  private async proccessImage(
+    auction: AuctionDto,
+    image: Express.Multer.File | null
+  ): Promise<string | null | undefined> {
+    // * in case the user wants to delete an image
+    if (image === null) return null;
+    // * in case the user didn't provide an image we just keep the old one
+    if (image === undefined) return undefined;
+
+    // * delete the promo image from the DB if the user sends a new image
+    if (auction?.promoImageUrl) {
+      await this.s3Service.deleteImage(auction.promoImageUrl.split("/").pop());
+    }
+    // * upload the new image to S3
+    const uploadedResult = await this.s3Service.uploadDocument(
+      image.path,
+      `auctions/${image.filename}`,
+      image.mimetype
+    );
+
+    // * remove the image from the file system
+    await this.fileSystemService.removeFile(image.path);
+
+    return uploadedResult.url;
+  }
+
+  async uploadAuctionImages(
+    auction: AuctionDto,
+    promoImage: Express.Multer.File | null | undefined,
+    backgroundImage: Express.Multer.File | null | undefined
+  ) {
+    const [promoImageUrl, backgroundImageUrl] = await Promise.all([
+      await this.proccessImage(auction, promoImage),
+      await this.proccessImage(auction, backgroundImage),
+    ]);
+
+    return await this.dataLayerService.uploadAuctionImages(
+      //@ts-ignore
+      auction._id,
+      promoImageUrl,
+      backgroundImageUrl
+    );
+  }
+
+  async checkAuctionNameAvailability(owner: string, name: string) {
+    const result = await this.dataLayerService.checkAuctionNameAvailability(
+      owner,
+      name.trim()
+    );
+    if (!result) {
+      return { existingName: false };
+    }
+
+    return { existingName: true };
+  }
+
+  async checkTierNameAvailability(
+    owner: string,
+    auctionId: string,
+    name: string
+  ) {
+    const result = await this.dataLayerService.checkTierNameAvailability(
+      owner,
+      auctionId,
+      name.trim()
+    );
+
+    if (!result.length) return { existingTierName: false };
+    return { existingTierName: true };
   }
 }

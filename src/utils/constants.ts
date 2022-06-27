@@ -16,3 +16,8 @@ export const REWARD_TIER_MODIFIED_STATUS = {
   notEdited:
     "The requirments for editing or creating a reward tier were not met",
 };
+
+export const VALID_MIME_TYPES = ["image/jpeg", "image/png"];
+export const S3_ERROR =
+  "AWS SDK: One or more of the following parameters is either missing or wrong: accessKeyId, secretAccessKey, s3BaseUrl, bucketName";
+export const CRITICAL_ERROR = "Unhandled exception error";

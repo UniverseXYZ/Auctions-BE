@@ -2,6 +2,7 @@ import { AuctionDto } from "src/auctions/dtos/auction.dto";
 import { TierDto } from "src/auctions/dtos/rewardTier.dto";
 
 export interface IDataLayer {
+  //* TODO: separate interfaces
   createAuction(auction: AuctionDto);
   removeAuction(id: string);
   createRewardTier(tier: TierDto, id: string);
@@ -19,4 +20,11 @@ export interface IDataLayer {
   getMyDraftAuctionsCount(user: string);
   editAuction(auctionId: string, auction: AuctionDto);
   checkUrlAvailability(owner: string, link: string);
+  uploadAuctionImages(
+    auctionId: string,
+    promoImageUrl: string,
+    backgroundImageUrl: string
+  );
+  checkAuctionNameAvailability(owner: string, name: string);
+  checkTierNameAvailability(owner: string, auctionId: string, name: string);
 }
