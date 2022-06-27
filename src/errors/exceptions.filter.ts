@@ -10,6 +10,7 @@ import {
   HttpExceptionResponse,
 } from "./http-exception-response.interface";
 import { Request, Response } from "express";
+import { CRITICAL_ERROR } from "src/utils/constants";
 
 @Catch()
 export class ExceptionsFilter implements ExceptionFilter {
@@ -35,7 +36,7 @@ export class ExceptionsFilter implements ExceptionFilter {
       }
     } else {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
-      errorMessage = "Critical error bro";
+      errorMessage = CRITICAL_ERROR;
     }
 
     const errorResponse = this.getErrorResponse(status, errorMessage, request);

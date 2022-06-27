@@ -8,7 +8,7 @@ import { isEmpty } from "lodash";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { isValidId } from "../../utils";
-import { Exceptions } from "../exceptions";
+import { Exceptions } from "../../errors/exceptions";
 
 @Injectable()
 export class RewardTiersExceptionInterceptor implements NestInterceptor {

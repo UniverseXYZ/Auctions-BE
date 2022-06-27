@@ -19,7 +19,7 @@ import { AuctionsExceptionInterceptor } from "./interceptors/auctions.intercepto
 import { RewardTiersExceptionInterceptor } from "./interceptors/rewardTiers.interceptor";
 import { NftsService } from "../nfts/nfts.service";
 import { Tokens } from "../utils/tokens";
-import { Exceptions } from "./exceptions";
+import { Exceptions } from "../errors/exceptions";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { auctionLandingImagesMulterOptions } from "./file-storage/multer-options";
 

@@ -212,11 +212,16 @@ export class AuctionsService {
     promoImage: Express.Multer.File | null | undefined,
     backgroundImage: Express.Multer.File | null | undefined
   ) {
+    const [promoImageUrl, backgroundImageUrl] = await Promise.all([
+      await this.proccessImage(auction, promoImage),
+      await this.proccessImage(auction, backgroundImage),
+    ]);
+
     return await this.dataLayerService.uploadAuctionImages(
       //@ts-ignore
       auction._id,
-      await this.proccessImage(auction, promoImage),
-      await this.proccessImage(auction, backgroundImage)
+      promoImageUrl,
+      backgroundImageUrl
     );
   }
 

@@ -2,14 +2,15 @@ import { diskStorage } from "multer";
 import * as path from "path";
 import * as crypto from "crypto";
 import { MulterOptions } from "@nestjs/platform-express/multer/interfaces/multer-options.interface";
-import { Exceptions } from "../exceptions";
+import { Exceptions } from "../../errors/exceptions";
+import { VALID_MIME_TYPES } from "src/utils/constants";
 
 export const auctionLandingImagesMulterOptions = () => {
-  return multerOptionsFactory(3, ["image/jpeg", "image/png"]);
+  return multerOptionsFactory(3, VALID_MIME_TYPES);
 };
 
 export const rewardTierImagesMulterOptions = () => {
-  return multerOptionsFactory(3, ["image/jpeg", "image/png"]);
+  return multerOptionsFactory(3, VALID_MIME_TYPES);
 };
 
 const multerOptionsFactory: (
