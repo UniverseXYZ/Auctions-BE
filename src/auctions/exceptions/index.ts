@@ -40,4 +40,15 @@ export class Exceptions {
       HttpStatus.BAD_REQUEST
     );
   }
+
+  static invalidFileType(mimeTypes: string[]) {
+    // ! returning this only for typescript reasons
+    return new HttpException(
+      {
+        status: HttpStatus.BAD_REQUEST,
+        error: `File type is not valid. Supported types are: ${mimeTypes}`,
+      },
+      HttpStatus.BAD_REQUEST
+    );
+  }
 }

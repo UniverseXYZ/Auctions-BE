@@ -16,3 +16,5 @@ export const REWARD_TIER_MODIFIED_STATUS = {
   notEdited:
     "The requirments for editing or creating a reward tier were not met",
 };
+
+export const validMimeTypes = ["image/jpeg", "image/png"];

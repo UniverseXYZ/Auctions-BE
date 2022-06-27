@@ -8,6 +8,8 @@ import { DATA_LAYER_SERVICE } from "../utils/constants";
 import { NftsModule } from "src/nfts/nfts.module";
 import { Tokens } from "../utils/tokens";
 import { AuctionGateway } from "./auctions.gateway";
+import { S3Service } from "./file-storage/file-storage.service";
+import { FileSystemService } from "./file-system/file-system.service";
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { AuctionGateway } from "./auctions.gateway";
     AuctionsService,
     Tokens,
     AuctionGateway,
+    S3Service,
+    FileSystemService,
     {
       useClass: DataLayerService,
       provide: DATA_LAYER_SERVICE,

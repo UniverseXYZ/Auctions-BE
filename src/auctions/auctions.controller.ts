@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   Req,
+  UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common";
 import { ApiOperation, ApiParam } from "@nestjs/swagger";
@@ -19,6 +20,8 @@ import { RewardTiersExceptionInterceptor } from "./interceptors/rewardTiers.inte
 import { NftsService } from "../nfts/nfts.service";
 import { Tokens } from "../utils/tokens";
 import { Exceptions } from "./exceptions";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import { auctionLandingImagesMulterOptions } from "./file-storage/multer-options";
 
 //! TODO: add auth
 @Controller("auctions")
@@ -304,5 +307,34 @@ export class AuctionsController {
     //! TODO: get address via url param or userId?
     const hardcodedOwner = "0x13BBDC67f17A0C257eF67328C658950573A16aDe";
     return await this.auctionService.checkUrlAvailability(hardcodedOwner, url);
+  }
+  @Post("/:auctionId/images")
+  @ApiOperation({ summary: "Upload auction images" })
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: "promo-image" }, { name: "background-image" }],
+      auctionLandingImagesMulterOptions()
+    )
+  )
+  async uploadAuctionLandingImages(
+    @Req() req,
+    @Param("auctionId") auctionId,
+    @UploadedFiles() files: Record<string, Express.Multer.File[]>
+  ) {
+    const auction = await this.auctionService.getAuction(auctionId);
+
+    if (!auction) {
+      Exceptions.auctionNotFound(auctionId);
+    }
+
+    const promoImage = files && files["promo-image"] && files["promo-image"][0];
+    const backgroundImage =
+      files && files["background-image"] && files["background-image"][0];
+
+    return await this.auctionService.uploadAuctionImages(
+      auction,
+      promoImage,
+      backgroundImage
+    );
   }
 }

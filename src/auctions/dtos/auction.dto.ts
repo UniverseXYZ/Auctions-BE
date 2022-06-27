@@ -105,4 +105,10 @@ export class AuctionDto {
   @Type(() => TierDto)
   @IsOptional()
   rewardTiers: TierDto[];
+
+  @IsOptional()
+  promoImageUrl: string;
+
+  @IsOptional()
+  backgroundImageUrl: string;
 }
