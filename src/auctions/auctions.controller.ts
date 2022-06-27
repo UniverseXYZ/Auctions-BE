@@ -309,6 +309,7 @@ export class AuctionsController {
     return await this.auctionService.checkUrlAvailability(hardcodedOwner, url);
   }
 
+  @UseInterceptors(AuctionsExceptionInterceptor)
   @Post("/:auctionId/images")
   @ApiOperation({ summary: "Upload auction images" })
   @UseInterceptors(
@@ -339,13 +340,37 @@ export class AuctionsController {
     );
   }
 
-  @Get("/page/name/:name")
+  @Get("/name/:name")
   @ApiOperation({ summary: "Check auction name availability" })
   async checkAuctionNameAvailability(@Param("name") name, @Req() req) {
     //! TODO: get address via url param or userId?
     const hardcodedOwner = "0x13BBDC67f17A0C257eF67328C658950573A16aDe";
     return await this.auctionService.checkAuctionNameAvailability(
       hardcodedOwner,
+      name
+    );
+  }
+
+  @UseInterceptors(AuctionsExceptionInterceptor)
+  @Get("/:auctionId/tier/:name")
+  @ApiOperation({ summary: "Check reward tier name availability" })
+  async checkTierNameAvailability(
+    @Param("auctionId") auctionId,
+    @Param("name") name,
+    @Req() req
+  ) {
+    const auction = await this.auctionService.getAuction(auctionId);
+
+    if (!auction) {
+      Exceptions.auctionNotFound(auctionId);
+    }
+
+    //! TODO: get address via url param or userId?
+    const hardcodedOwner = "0x13BBDC67f17A0C257eF67328C658950573A16aDe";
+
+    return await this.auctionService.checkTierNameAvailability(
+      hardcodedOwner,
+      auctionId,
       name
     );
   }

@@ -26,4 +26,5 @@ export interface IDataLayer {
     backgroundImageUrl: string
   );
   checkAuctionNameAvailability(owner: string, name: string);
+  checkTierNameAvailability(owner: string, auctionId: string, name: string);
 }

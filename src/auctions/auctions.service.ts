@@ -231,4 +231,19 @@ export class AuctionsService {
 
     return { existingName: true };
   }
+
+  async checkTierNameAvailability(
+    owner: string,
+    auctionId: string,
+    name: string
+  ) {
+    const result = await this.dataLayerService.checkTierNameAvailability(
+      owner,
+      auctionId,
+      name.trim()
+    );
+
+    if (!result.length) return { existingTierName: false };
+    return { existingTierName: true };
+  }
 }

@@ -243,4 +243,27 @@ export class DataLayerService implements IDataLayer {
       name: name,
     });
   }
+
+  async checkTierNameAvailability(
+    owner: string,
+    auctionId: string,
+    name: string
+  ) {
+    return this.auctionsModel.aggregate([
+      { $match: { owner: owner, _id: castToId(auctionId) } },
+      {
+        $project: {
+          _id: 0,
+          tier: {
+            $filter: {
+              input: "$rewardTiers",
+              as: "tiers",
+              cond: { $eq: ["$$tiers.name", name] },
+            },
+          },
+        },
+      },
+      { $unwind: "$tier" },
+    ]);
+  }
 }
