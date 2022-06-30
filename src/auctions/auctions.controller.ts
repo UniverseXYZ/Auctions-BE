@@ -29,6 +29,7 @@ import {
   auctionLandingImagesMulterOptions,
   rewardTierImagesMulterOptions,
 } from "./file-storage/multer-options";
+import { IMAGE_ERRORS, IMAGE_KEYS } from "src/utils/constants";
 
 //! TODO: add auth
 @Controller("auctions")
@@ -321,7 +322,7 @@ export class AuctionsController {
   @ApiOperation({ summary: "Upload auction images" })
   @UseInterceptors(
     FileFieldsInterceptor(
-      [{ name: "promo-image" }, { name: "background-image" }],
+      [{ name: IMAGE_KEYS.promoImage }, { name: IMAGE_KEYS.backgroundImage }],
       auctionLandingImagesMulterOptions()
     )
   )
@@ -336,9 +337,12 @@ export class AuctionsController {
       Exceptions.auctionNotFound(auctionId);
     }
 
-    const promoImage = files && files["promo-image"] && files["promo-image"][0];
+    const promoImage =
+      files && files[IMAGE_KEYS.promoImage] && files[IMAGE_KEYS.promoImage][0];
     const backgroundImage =
-      files && files["background-image"] && files["background-image"][0];
+      files &&
+      files[IMAGE_KEYS.backgroundImage] &&
+      files[IMAGE_KEYS.backgroundImage][0];
 
     return await this.auctionService.uploadAuctionImages(
       auction,
@@ -384,16 +388,16 @@ export class AuctionsController {
 
   @UseInterceptors(AuctionsExceptionInterceptor)
   @UseInterceptors(RewardTiersExceptionInterceptor)
-  @Patch("/:auctionId/tier/:tierId/image")
+  @Patch("/:auctionId/tier/:rewardTierId/image")
   @ApiOperation({ summary: "Upload reward tier image" })
   @UseInterceptors(
-    FileInterceptor("tier-image", rewardTierImagesMulterOptions())
+    FileInterceptor(IMAGE_KEYS.tierImage, rewardTierImagesMulterOptions())
   )
   //@ApiConsumes("form/multi-part")
   async uploadRewardTierImage(
     @Req() req,
     @Param("auctionId") auctionId,
-    @Param("tierId") tierId,
+    @Param("rewardTierId") rewardTierId,
     @UploadedFile() file: Express.Multer.File
   ) {
     const auction = await this.auctionService.getAuction(auctionId);
@@ -404,18 +408,46 @@ export class AuctionsController {
 
     const rewardTier = await this.auctionService.getRewardTier(
       auctionId,
-      tierId
+      rewardTierId
     );
 
     if (!rewardTier.length) {
-      Exceptions.tierNotFound(tierId);
+      Exceptions.tierNotFound(rewardTierId);
     }
 
     return await this.auctionService.uploadRewardTierImage(
       auctionId,
-      tierId,
+      rewardTierId,
       rewardTier[0].tier,
       file
+    );
+  }
+
+  @UseInterceptors(AuctionsExceptionInterceptor)
+  @Delete("/:auctionId/images")
+  @ApiOperation({ summary: "Delete image(s) from an auction" })
+  async deleteAuctionImages(
+    @Param("auctionId") auctionId,
+    @Query("image") image,
+    @Req() req
+  ) {
+    const auction = await this.auctionService.getAuction(auctionId);
+
+    if (!auction) {
+      Exceptions.auctionNotFound(auctionId);
+    }
+
+    if (!image) {
+      return IMAGE_ERRORS.DELETE_AUCTION_IMAGE;
+    }
+
+    //! TODO: get address via url param or userId?
+    const hardcodedOwner = "0x13BBDC67f17A0C257eF67328C658950573A16aDe";
+
+    return await this.auctionService.deleteAuctionImages(
+      hardcodedOwner,
+      auctionId,
+      image
     );
   }
 }

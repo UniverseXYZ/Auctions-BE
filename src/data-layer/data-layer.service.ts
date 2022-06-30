@@ -217,8 +217,8 @@ export class DataLayerService implements IDataLayer {
   }
   async uploadAuctionImages(
     auctionId: string,
-    promoImage: string | null | undefined,
-    backgroundImage: string | null | undefined
+    promoImage: string,
+    backgroundImage: string
   ): Promise<AuctionsDocument> {
     return await this.auctionsModel.findOneAndUpdate(
       {
@@ -230,7 +230,7 @@ export class DataLayerService implements IDataLayer {
           backgroundImageUrl: backgroundImage,
         },
       },
-      { new: true, omitUndefined: true }
+      { new: true }
     );
   }
 
@@ -297,7 +297,24 @@ export class DataLayerService implements IDataLayer {
         rewardTiers: { $elemMatch: { _id: tierId } },
       },
       { $set: { "rewardTiers.$": rewardTier } },
-      { new: true, omitUndefined: true }
+      { new: true }
+    );
+  }
+
+  async deleteAuctionImages(
+    owner: string,
+    auctionId: string,
+    imagesToDelete: { promoImageUrl?: null; backgroundImageUrl?: null }
+  ): Promise<AuctionsDocument> {
+    return await this.auctionsModel.findOneAndUpdate(
+      {
+        _id: auctionId,
+        owner: owner,
+      },
+      {
+        $set: imagesToDelete,
+      },
+      { new: true }
     );
   }
 }

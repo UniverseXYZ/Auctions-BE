@@ -1,6 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
   AUCTION_CANCELED_STATUS,
+  IMAGE_ERRORS,
+  IMAGE_KEYS,
   REWARD_TIER_MODIFIED_STATUS,
 } from "../utils/constants";
 import { IDataLayer } from "../data-layer/IDataLayer";
@@ -9,7 +11,6 @@ import { AuctionDto } from "./dtos/auction.dto";
 import { TierDto } from "./dtos/rewardTier.dto";
 import { S3Service } from "./file-storage/file-storage.service";
 import { FileSystemService } from "./file-system/file-system.service";
-import { AuctionsDocument } from "./schemas/auction.schema";
 
 @Injectable()
 export class AuctionsService {
@@ -183,12 +184,10 @@ export class AuctionsService {
     return { existingPage: true };
   }
   private async proccessImage(
-    image: Express.Multer.File | null,
+    image: Express.Multer.File | undefined,
     auction?: AuctionDto,
     rewardTier?: TierDto
-  ): Promise<string | null | undefined> {
-    // // * in case the user wants to delete an image
-
+  ): Promise<string | undefined> {
     if (!image) return;
 
     // * delete the promo image from the S3 if the user sends a new image
@@ -233,6 +232,10 @@ export class AuctionsService {
       await this.proccessImage(promoImage, auction),
       await this.proccessImage(backgroundImage, auction),
     ]);
+
+    if (!promoImageUrl && !backgroundImageUrl) {
+      return IMAGE_ERRORS.UPLOAD_AUCTION_IMAGE;
+    }
 
     return await this.dataLayerService.uploadAuctionImages(
       //@ts-ignore
@@ -285,12 +288,39 @@ export class AuctionsService {
       rewardTier
     );
 
+    if (!rewardTierImageUrl) {
+      return IMAGE_ERRORS.UPLOAD_TIER_IMAGE;
+    }
+
     rewardTier.imageUrl = rewardTierImageUrl;
 
     return await this.dataLayerService.uploadRewardTierImage(
       auctionId,
       tierId,
       rewardTier
+    );
+  }
+
+  async deleteAuctionImages(owner: string, auctionId: string, image: string) {
+    let imagesToDelete: {
+      promoImageUrl?: null;
+      backgroundImageUrl?: null;
+    } = {};
+
+    image.split(",").forEach((image) => {
+      if (image.trim() === IMAGE_KEYS.promoImage) {
+        imagesToDelete.promoImageUrl = null;
+      }
+
+      if (image.trim() === IMAGE_KEYS.backgroundImage) {
+        imagesToDelete.backgroundImageUrl = null;
+      }
+    });
+
+    return this.dataLayerService.deleteAuctionImages(
+      owner,
+      auctionId,
+      imagesToDelete
     );
   }
 }
