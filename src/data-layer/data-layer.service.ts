@@ -302,18 +302,27 @@ export class DataLayerService implements IDataLayer {
   }
 
   async deleteAuctionImages(
-    owner: string,
     auctionId: string,
     imagesToDelete: { promoImageUrl?: null; backgroundImageUrl?: null }
   ): Promise<AuctionsDocument> {
     return await this.auctionsModel.findOneAndUpdate(
       {
         _id: auctionId,
-        owner: owner,
       },
       {
         $set: imagesToDelete,
       },
+      { new: true }
+    );
+  }
+
+  async deleteRewardTierImage(auctionId: string, tierId: string) {
+    return await this.auctionsModel.findOneAndUpdate(
+      {
+        _id: auctionId,
+        rewardTiers: { $elemMatch: { _id: tierId } },
+      },
+      { $set: { "rewardTiers.$.imageUrl": null } },
       { new: true }
     );
   }

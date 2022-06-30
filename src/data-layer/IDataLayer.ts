@@ -30,8 +30,8 @@ export interface IDataLayer {
   uploadRewardTierImage(auctionId: string, tierId: string, rewardTier: TierDto);
   getRewardTier(auctionId: string, tierId: string);
   deleteAuctionImages(
-    owner: string,
     auctionId: string,
     images: { promoImageUrl?: null; backgroundImageUrl?: null }
   );
+  deleteRewardTierImage(auctionId: string, tierId: string);
 }

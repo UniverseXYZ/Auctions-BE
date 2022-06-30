@@ -323,10 +323,25 @@ export class AuctionsService {
     });
 
     return this.dataLayerService.deleteAuctionImages(
-      owner,
       //@ts-ignore
       auction._id,
       imagesToDelete
+    );
+  }
+
+  async deleteRewardTierImage(
+    owner: string,
+    auctionId: string,
+    rewardTier: TierDto
+  ) {
+    if (rewardTier?.imageUrl) {
+      await this.s3Service.deleteImage(rewardTier.imageUrl.split("/").pop());
+    }
+
+    return await this.dataLayerService.deleteRewardTierImage(
+      auctionId,
+      //@ts-ignore
+      rewardTier._id
     );
   }
 }

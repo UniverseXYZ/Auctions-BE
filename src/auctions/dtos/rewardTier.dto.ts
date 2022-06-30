@@ -3,6 +3,7 @@ import { Type } from "class-transformer";
 import {
   ArrayMinSize,
   IsArray,
+  IsHexColor,
   IsNumber,
   IsOptional,
   IsString,
@@ -41,7 +42,7 @@ export class TierDto {
             tokenId: "2",
           },
         ],
-        minimumBid: "0.1",
+        minimumBid: 0.1,
       },
       {
         nfts: [
@@ -69,6 +70,14 @@ export class TierDto {
     example: "https://image-hash.png",
   })
   @IsOptional()
-  @IsNumber()
+  @IsString()
   imageUrl: string;
+
+  @ApiProperty({
+    description: "Reward tier color",
+    example: "#fafafa",
+  })
+  @IsOptional()
+  @IsHexColor()
+  color: string;
 }

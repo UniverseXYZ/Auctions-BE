@@ -450,4 +450,38 @@ export class AuctionsController {
       image
     );
   }
+
+  @UseInterceptors(AuctionsExceptionInterceptor)
+  @UseInterceptors(RewardTiersExceptionInterceptor)
+  @Delete("/:auctionId/tier/:rewardTierId/image")
+  @ApiOperation({ summary: "Delete image from a reward tier" })
+  async deleteRewardTierImage(
+    @Param("auctionId") auctionId,
+    @Param("rewardTierId") rewardTierId,
+    @Req() req
+  ) {
+    const auction = await this.auctionService.getAuction(auctionId);
+
+    if (!auction) {
+      Exceptions.auctionNotFound(auctionId);
+    }
+
+    const rewardTier = await this.auctionService.getRewardTier(
+      auctionId,
+      rewardTierId
+    );
+
+    if (!rewardTier.length) {
+      Exceptions.tierNotFound(rewardTierId);
+    }
+
+    //! TODO: get address via url param or userId?
+    const hardcodedOwner = "0x13BBDC67f17A0C257eF67328C658950573A16aDe";
+
+    return await this.auctionService.deleteRewardTierImage(
+      hardcodedOwner,
+      auctionId,
+      rewardTier[0].tier
+    );
+  }
 }

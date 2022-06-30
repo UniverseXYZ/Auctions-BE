@@ -15,6 +15,9 @@ export class RewardTiers {
 
   @Prop()
   public imageUrl: string;
+
+  @Prop()
+  public color: string;
 }
 
 export type RewardTiersDocument = RewardTiers & Document;
