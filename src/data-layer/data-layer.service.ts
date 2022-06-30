@@ -316,7 +316,10 @@ export class DataLayerService implements IDataLayer {
     );
   }
 
-  async deleteRewardTierImage(auctionId: string, tierId: string) {
+  async deleteRewardTierImage(
+    auctionId: string,
+    tierId: string
+  ): Promise<AuctionsDocument> {
     return await this.auctionsModel.findOneAndUpdate(
       {
         _id: auctionId,
