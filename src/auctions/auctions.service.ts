@@ -301,25 +301,31 @@ export class AuctionsService {
     );
   }
 
-  async deleteAuctionImages(owner: string, auctionId: string, image: string) {
+  async deleteAuctionImages(owner: string, auction: AuctionDto, image: string) {
     let imagesToDelete: {
       promoImageUrl?: null;
       backgroundImageUrl?: null;
     } = {};
 
     image.split(",").forEach((image) => {
-      if (image.trim() === IMAGE_KEYS.promoImage) {
+      if (image.trim() === IMAGE_KEYS.promoImage && auction?.promoImageUrl) {
+        this.s3Service.deleteImage(auction.promoImageUrl.split("/").pop());
         imagesToDelete.promoImageUrl = null;
       }
 
-      if (image.trim() === IMAGE_KEYS.backgroundImage) {
+      if (
+        image.trim() === IMAGE_KEYS.backgroundImage &&
+        auction?.backgroundImageUrl
+      ) {
+        this.s3Service.deleteImage(auction.backgroundImageUrl.split("/").pop());
         imagesToDelete.backgroundImageUrl = null;
       }
     });
 
     return this.dataLayerService.deleteAuctionImages(
       owner,
-      auctionId,
+      //@ts-ignore
+      auction._id,
       imagesToDelete
     );
   }

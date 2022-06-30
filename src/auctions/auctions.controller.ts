@@ -446,7 +446,7 @@ export class AuctionsController {
 
     return await this.auctionService.deleteAuctionImages(
       hardcodedOwner,
-      auctionId,
+      auction,
       image
     );
   }
