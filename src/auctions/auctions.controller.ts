@@ -8,10 +8,11 @@ import {
   Post,
   Query,
   Req,
+  UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common";
-import { ApiOperation, ApiParam } from "@nestjs/swagger";
+import { ApiConsumes, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { AuctionDto } from "./dtos/auction.dto";
 import { AuctionsService } from "./auctions.service";
 import { TierDto } from "./dtos/rewardTier.dto";
@@ -20,8 +21,14 @@ import { RewardTiersExceptionInterceptor } from "./interceptors/rewardTiers.inte
 import { NftsService } from "../nfts/nfts.service";
 import { Tokens } from "../utils/tokens";
 import { Exceptions } from "../errors/exceptions";
-import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import { auctionLandingImagesMulterOptions } from "./file-storage/multer-options";
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from "@nestjs/platform-express";
+import {
+  auctionLandingImagesMulterOptions,
+  rewardTierImagesMulterOptions,
+} from "./file-storage/multer-options";
 
 //! TODO: add auth
 @Controller("auctions")
@@ -310,7 +317,7 @@ export class AuctionsController {
   }
 
   @UseInterceptors(AuctionsExceptionInterceptor)
-  @Post("/:auctionId/images")
+  @Patch("/:auctionId/images")
   @ApiOperation({ summary: "Upload auction images" })
   @UseInterceptors(
     FileFieldsInterceptor(
@@ -372,6 +379,43 @@ export class AuctionsController {
       hardcodedOwner,
       auctionId,
       name
+    );
+  }
+
+  @UseInterceptors(AuctionsExceptionInterceptor)
+  @UseInterceptors(RewardTiersExceptionInterceptor)
+  @Patch("/:auctionId/tier/:tierId/image")
+  @ApiOperation({ summary: "Upload reward tier image" })
+  @UseInterceptors(
+    FileInterceptor("tier-image", rewardTierImagesMulterOptions())
+  )
+  //@ApiConsumes("form/multi-part")
+  async uploadRewardTierImage(
+    @Req() req,
+    @Param("auctionId") auctionId,
+    @Param("tierId") tierId,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    const auction = await this.auctionService.getAuction(auctionId);
+
+    if (!auction) {
+      Exceptions.auctionNotFound(auctionId);
+    }
+
+    const rewardTier = await this.auctionService.getRewardTier(
+      auctionId,
+      tierId
+    );
+
+    if (!rewardTier.length) {
+      Exceptions.tierNotFound(tierId);
+    }
+
+    return await this.auctionService.uploadRewardTierImage(
+      auctionId,
+      tierId,
+      rewardTier[0].tier,
+      file
     );
   }
 }

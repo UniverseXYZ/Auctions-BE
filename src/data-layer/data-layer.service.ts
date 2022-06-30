@@ -219,7 +219,7 @@ export class DataLayerService implements IDataLayer {
     auctionId: string,
     promoImage: string | null | undefined,
     backgroundImage: string | null | undefined
-  ) {
+  ): Promise<AuctionsDocument> {
     return await this.auctionsModel.findOneAndUpdate(
       {
         _id: auctionId,
@@ -248,8 +248,8 @@ export class DataLayerService implements IDataLayer {
     owner: string,
     auctionId: string,
     name: string
-  ) {
-    return this.auctionsModel.aggregate([
+  ): Promise<TierDto[]> {
+    return await this.auctionsModel.aggregate([
       { $match: { owner: owner, _id: castToId(auctionId) } },
       {
         $project: {
@@ -265,5 +265,39 @@ export class DataLayerService implements IDataLayer {
       },
       { $unwind: "$tier" },
     ]);
+  }
+
+  async getRewardTier(auctionId: string, tierId: string): Promise<TierDto[]> {
+    return await this.auctionsModel.aggregate([
+      { $match: { _id: castToId(auctionId) } },
+      {
+        $project: {
+          _id: 0,
+          tier: {
+            $filter: {
+              input: "$rewardTiers",
+              as: "tiers",
+              cond: { $eq: ["$$tiers._id", castToId(tierId)] },
+            },
+          },
+        },
+      },
+      { $unwind: "$tier" },
+    ]);
+  }
+
+  async uploadRewardTierImage(
+    auctionId: string,
+    tierId: string,
+    rewardTier: TierDto
+  ): Promise<AuctionsDocument> {
+    return await this.auctionsModel.findOneAndUpdate(
+      {
+        _id: auctionId,
+        rewardTiers: { $elemMatch: { _id: tierId } },
+      },
+      { $set: { "rewardTiers.$": rewardTier } },
+      { new: true, omitUndefined: true }
+    );
   }
 }

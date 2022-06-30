@@ -4,6 +4,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsNumber,
+  IsOptional,
   IsString,
   Length,
   ValidateNested,
@@ -62,4 +63,12 @@ export class TierDto {
   @Type(() => NftSlots)
   @ApiProperty({ type: () => NftSlots, isArray: true })
   nftSlots: NftSlots[];
+
+  @ApiProperty({
+    description: "Reward tier image url",
+    example: "https://image-hash.png",
+  })
+  @IsOptional()
+  @IsNumber()
+  imageUrl: string;
 }
