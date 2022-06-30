@@ -65,10 +65,6 @@ export class TierDto {
   @ApiProperty({ type: () => NftSlots, isArray: true })
   nftSlots: NftSlots[];
 
-  @ApiProperty({
-    description: "Reward tier image url",
-    example: "https://image-hash.png",
-  })
   @IsOptional()
   @IsString()
   imageUrl: string;

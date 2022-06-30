@@ -6,6 +6,9 @@ import { Nfts, NftsSchema } from "./nfts.schema";
 export class NftSlots {
   @Prop({ type: [NftsSchema], required: true })
   public nfts: Nfts[];
+
+  @Prop()
+  public minimumBid: number;
 }
 
 export type NftSlotsDocument = NftSlots & Document;

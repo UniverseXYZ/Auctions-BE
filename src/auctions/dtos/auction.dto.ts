@@ -107,8 +107,14 @@ export class AuctionDto {
   rewardTiers: TierDto[];
 
   @IsOptional()
+  @IsString()
   promoImageUrl: string;
 
   @IsOptional()
+  @IsString()
   backgroundImageUrl: string;
+
+  @IsOptional()
+  @IsBoolean()
+  backgroundImageBlur: boolean;
 }

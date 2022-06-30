@@ -103,7 +103,7 @@ export class AuctionsService {
 
     const { canceled, onChain, depositedNfts, finalised } = auction;
 
-    // * check if the reward tier is not finalised, doesn't have any deposited NFTs, is not onChain and is not canceled
+    // * check if the auction is not finalised, doesn't have any deposited NFTs, is not onChain and is not canceled
     if (!finalised || !depositedNfts || (!onChain && !canceled)) {
       const result = await this.dataLayerService.removeRewardTier(
         auctionId,
@@ -233,10 +233,6 @@ export class AuctionsService {
       await this.proccessImage(backgroundImage, auction),
     ]);
 
-    if (!promoImageUrl && !backgroundImageUrl) {
-      return IMAGE_ERRORS.UPLOAD_AUCTION_IMAGE;
-    }
-
     return await this.dataLayerService.uploadAuctionImages(
       //@ts-ignore
       auction._id,
@@ -287,10 +283,6 @@ export class AuctionsService {
       null,
       rewardTier
     );
-
-    if (!rewardTierImageUrl) {
-      return IMAGE_ERRORS.UPLOAD_TIER_IMAGE;
-    }
 
     rewardTier.imageUrl = rewardTierImageUrl;
 
