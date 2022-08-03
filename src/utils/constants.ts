@@ -21,3 +21,15 @@ export const VALID_MIME_TYPES = ["image/jpeg", "image/png"];
 export const S3_ERROR =
   "AWS SDK: One or more of the following parameters is either missing or wrong: accessKeyId, secretAccessKey, s3BaseUrl, bucketName";
 export const CRITICAL_ERROR = "Unhandled exception error";
+
+export const IMAGE_KEYS = {
+  promoImage: "promo-image",
+  backgroundImage: "background-image",
+  tierImage: "tier-image",
+};
+
+export const IMAGE_ERRORS = {
+  DELETE_AUCTION_IMAGE: "Missing required query params - {image key}",
+  UPLOAD_TIER_IMAGE: "Missing image file",
+  UPLOAD_AUCTION_IMAGE: "Provide at least one image file",
+};

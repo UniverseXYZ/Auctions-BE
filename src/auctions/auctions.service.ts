@@ -1,6 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
   AUCTION_CANCELED_STATUS,
+  IMAGE_ERRORS,
+  IMAGE_KEYS,
   REWARD_TIER_MODIFIED_STATUS,
 } from "../utils/constants";
 import { IDataLayer } from "../data-layer/IDataLayer";
@@ -101,7 +103,7 @@ export class AuctionsService {
 
     const { canceled, onChain, depositedNfts, finalised } = auction;
 
-    // * check if the reward tier is not finalised, doesn't have any deposited NFTs, is not onChain and is not canceled
+    // * check if the auction is not finalised, doesn't have any deposited NFTs, is not onChain and is not canceled
     if (!finalised || !depositedNfts || (!onChain && !canceled)) {
       const result = await this.dataLayerService.removeRewardTier(
         auctionId,
@@ -182,18 +184,32 @@ export class AuctionsService {
     return { existingPage: true };
   }
   private async proccessImage(
-    auction: AuctionDto,
-    image: Express.Multer.File | null
-  ): Promise<string | null | undefined> {
-    // * in case the user wants to delete an image
-    if (image === null) return null;
-    // * in case the user didn't provide an image we just keep the old one
-    if (image === undefined) return undefined;
+    image: Express.Multer.File | undefined,
+    auction?: AuctionDto,
+    rewardTier?: TierDto
+  ): Promise<string | undefined> {
+    if (!image) return;
 
-    // * delete the promo image from the DB if the user sends a new image
-    if (auction?.promoImageUrl) {
+    // * delete the promo image from the S3 if the user sends a new image
+    if (image?.fieldname === "promo-image" && auction?.promoImageUrl) {
       await this.s3Service.deleteImage(auction.promoImageUrl.split("/").pop());
     }
+
+    // * delete the background image from the S3 if the user sends a new image
+    if (
+      image?.fieldname === "background-image" &&
+      auction?.backgroundImageUrl
+    ) {
+      await this.s3Service.deleteImage(
+        auction.backgroundImageUrl.split("/").pop()
+      );
+    }
+
+    // * delete the tier image from the S3 if the user sends a new image
+    if (image.fieldname === "tier-image" && rewardTier?.imageUrl) {
+      await this.s3Service.deleteImage(rewardTier.imageUrl.split("/").pop());
+    }
+
     // * upload the new image to S3
     const uploadedResult = await this.s3Service.uploadDocument(
       image.path,
@@ -213,8 +229,8 @@ export class AuctionsService {
     backgroundImage: Express.Multer.File | null | undefined
   ) {
     const [promoImageUrl, backgroundImageUrl] = await Promise.all([
-      await this.proccessImage(auction, promoImage),
-      await this.proccessImage(auction, backgroundImage),
+      await this.proccessImage(promoImage, auction),
+      await this.proccessImage(backgroundImage, auction),
     ]);
 
     return await this.dataLayerService.uploadAuctionImages(
@@ -250,5 +266,74 @@ export class AuctionsService {
 
     if (!result.length) return { existingTierName: false };
     return { existingTierName: true };
+  }
+
+  async getRewardTier(auctionId: string, tierId: string) {
+    return await this.dataLayerService.getRewardTier(auctionId, tierId);
+  }
+
+  async uploadRewardTierImage(
+    auctionId: string,
+    tierId: string,
+    rewardTier: TierDto,
+    image: Express.Multer.File | null | undefined
+  ) {
+    const rewardTierImageUrl = await this.proccessImage(
+      image,
+      null,
+      rewardTier
+    );
+
+    rewardTier.imageUrl = rewardTierImageUrl;
+
+    return await this.dataLayerService.uploadRewardTierImage(
+      auctionId,
+      tierId,
+      rewardTier
+    );
+  }
+
+  async deleteAuctionImages(owner: string, auction: AuctionDto, image: string) {
+    let imagesToDelete: {
+      promoImageUrl?: null;
+      backgroundImageUrl?: null;
+    } = {};
+
+    image.split(",").forEach((image) => {
+      if (image.trim() === IMAGE_KEYS.promoImage && auction?.promoImageUrl) {
+        this.s3Service.deleteImage(auction.promoImageUrl.split("/").pop());
+        imagesToDelete.promoImageUrl = null;
+      }
+
+      if (
+        image.trim() === IMAGE_KEYS.backgroundImage &&
+        auction?.backgroundImageUrl
+      ) {
+        this.s3Service.deleteImage(auction.backgroundImageUrl.split("/").pop());
+        imagesToDelete.backgroundImageUrl = null;
+      }
+    });
+
+    return this.dataLayerService.deleteAuctionImages(
+      //@ts-ignore
+      auction._id,
+      imagesToDelete
+    );
+  }
+
+  async deleteRewardTierImage(
+    owner: string,
+    auctionId: string,
+    rewardTier: TierDto
+  ) {
+    if (rewardTier?.imageUrl) {
+      await this.s3Service.deleteImage(rewardTier.imageUrl.split("/").pop());
+    }
+
+    return await this.dataLayerService.deleteRewardTierImage(
+      auctionId,
+      //@ts-ignore
+      rewardTier._id
+    );
   }
 }

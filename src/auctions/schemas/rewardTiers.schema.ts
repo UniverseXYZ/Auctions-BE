@@ -12,6 +12,12 @@ export class RewardTiers {
 
   @Prop({ type: [NftSlotsSchema], required: true })
   public nftSlots: [NftSlots];
+
+  @Prop()
+  public imageUrl: string;
+
+  @Prop()
+  public color: string;
 }
 
 export type RewardTiersDocument = RewardTiers & Document;

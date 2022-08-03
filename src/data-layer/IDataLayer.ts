@@ -27,4 +27,11 @@ export interface IDataLayer {
   );
   checkAuctionNameAvailability(owner: string, name: string);
   checkTierNameAvailability(owner: string, auctionId: string, name: string);
+  uploadRewardTierImage(auctionId: string, tierId: string, rewardTier: TierDto);
+  getRewardTier(auctionId: string, tierId: string);
+  deleteAuctionImages(
+    auctionId: string,
+    images: { promoImageUrl?: null; backgroundImageUrl?: null }
+  );
+  deleteRewardTierImage(auctionId: string, tierId: string);
 }

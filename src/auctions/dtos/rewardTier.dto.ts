@@ -3,7 +3,9 @@ import { Type } from "class-transformer";
 import {
   ArrayMinSize,
   IsArray,
+  IsHexColor,
   IsNumber,
+  IsOptional,
   IsString,
   Length,
   ValidateNested,
@@ -40,7 +42,7 @@ export class TierDto {
             tokenId: "2",
           },
         ],
-        minimumBid: "0.1",
+        minimumBid: 0.1,
       },
       {
         nfts: [
@@ -62,4 +64,16 @@ export class TierDto {
   @Type(() => NftSlots)
   @ApiProperty({ type: () => NftSlots, isArray: true })
   nftSlots: NftSlots[];
+
+  @IsOptional()
+  @IsString()
+  imageUrl: string;
+
+  @ApiProperty({
+    description: "Reward tier color",
+    example: "#fafafa",
+  })
+  @IsOptional()
+  @IsHexColor()
+  color: string;
 }
